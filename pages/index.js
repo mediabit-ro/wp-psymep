@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import Link from "next/link";
 import Head from "next/head";
-import Image from "next/image";
 import { withAuthSync } from "../utils/auth";
 import fetch from "isomorphic-unfetch";
 import nextCookie from "next-cookies";
@@ -59,6 +59,13 @@ const Home = observer((props) => {
 					</div>
 				))}
 			</div>
+			{store.activeProviders.length && (
+				<div className='p-3'>
+					<Link href='/calendar'>
+						<a className='btn btn-primary px-5'>Vezi calendar</a>
+					</Link>
+				</div>
+			)}
 		</Layout>
 	);
 });

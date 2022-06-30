@@ -7,6 +7,7 @@ import { logout } from "../utils/auth";
 import store from "../store/store";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
+import Head from "next/head";
 
 const Layout = observer(({ children }) => {
 	const router = useRouter();
@@ -19,6 +20,14 @@ const Layout = observer(({ children }) => {
 
 	return (
 		<div>
+			<Head>
+				<link rel='preconnect' href='https://fonts.googleapis.com' />
+				<link rel='preconnect' href='https://fonts.gstatic.com' />
+				<link
+					href='https://fonts.googleapis.com/css2?family=Poppins&display=swap'
+					rel='stylesheet'
+				/>
+			</Head>
 			<Offcanvas show={show} onHide={handleClose}>
 				<Offcanvas.Header closeButton>
 					<Offcanvas.Title>
@@ -47,40 +56,27 @@ const Layout = observer(({ children }) => {
 							</a>
 						</Link>
 					</div>
-					<div className='dropdown-head-wrap'>
-						<div
-							className='dropdown-head'
-							onClick={() => setDropdownState(!dropdownState)}>
-							Camere
-							{dropdownState ? (
-								<i className='bi bi-caret-up'></i>
-							) : (
-								<i className='bi bi-caret-down'></i>
-							)}
-						</div>
-						{dropdownState && (
-							<div className='dropdown-body'>
-								{store.providers.map((provider) => (
-									<div key={"sbapkeym" + provider.id} className='form-check'>
-										<input
-											className='form-check-input'
-											type='checkbox'
-											value=''
-											style={{
-												backgroundColor: provider.acf.culoare,
-												borderColor: provider.acf.culoare,
-											}}
-											onChange={() => store.toggleProvider(provider)}
-											checked={store.activeProviders.find(
-												(activeProvider) => activeProvider.id === provider.id
-											)}
-											id={"sbap" + provider.id}
-										/>
-										<label className='form-check-label'>{provider.name}</label>
-									</div>
-								))}
+
+					<div style={{ margin: "-15px 0 0 10px" }}>
+						{store.providers.map((provider) => (
+							<div key={"sbapkey" + provider.id} className='form-check'>
+								<input
+									className='form-check-input'
+									type='checkbox'
+									value=''
+									style={{
+										backgroundColor: provider.acf.culoare,
+										borderColor: provider.acf.culoare,
+									}}
+									onChange={() => store.toggleProvider(provider)}
+									checked={store.activeProviders.find(
+										(activeProvider) => activeProvider.id === provider.id
+									)}
+									id={"sbap" + provider.id}
+								/>
+								<label className='form-check-label'>{provider.name}</label>
 							</div>
-						)}
+						))}
 					</div>
 
 					<div className='navbar-item'>
@@ -142,40 +138,27 @@ const Layout = observer(({ children }) => {
 							</a>
 						</Link>
 					</div>
-					<div className='dropdown-head-wrap'>
-						<div
-							className='dropdown-head'
-							onClick={() => setDropdownState(!dropdownState)}>
-							Camere
-							{dropdownState ? (
-								<i className='bi bi-caret-up'></i>
-							) : (
-								<i className='bi bi-caret-down'></i>
-							)}
-						</div>
-						{dropdownState && (
-							<div className='dropdown-body'>
-								{store.providers.map((provider) => (
-									<div key={"sbapkey" + provider.id} className='form-check'>
-										<input
-											className='form-check-input'
-											type='checkbox'
-											value=''
-											style={{
-												backgroundColor: provider.acf.culoare,
-												borderColor: provider.acf.culoare,
-											}}
-											onChange={() => store.toggleProvider(provider)}
-											checked={store.activeProviders.find(
-												(activeProvider) => activeProvider.id === provider.id
-											)}
-											id={"sbap" + provider.id}
-										/>
-										<label className='form-check-label'>{provider.name}</label>
-									</div>
-								))}
+
+					<div style={{ margin: "-15px 0 0 10px" }}>
+						{store.providers.map((provider) => (
+							<div key={"sbapkey" + provider.id} className='form-check'>
+								<input
+									className='form-check-input'
+									type='checkbox'
+									value=''
+									style={{
+										backgroundColor: provider.acf.culoare,
+										borderColor: provider.acf.culoare,
+									}}
+									onChange={() => store.toggleProvider(provider)}
+									checked={store.activeProviders.find(
+										(activeProvider) => activeProvider.id === provider.id
+									)}
+									id={"sbap" + provider.id}
+								/>
+								<label className='form-check-label'>{provider.name}</label>
 							</div>
-						)}
+						))}
 					</div>
 
 					<div className='navbar-item'>

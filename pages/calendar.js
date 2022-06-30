@@ -263,7 +263,6 @@ const CalendarPage = observer((props) => {
 		} else {
 			if (!recurrent) addBooking(modalData);
 			else {
-				console.log("else recurrentBooking");
 				recurrentBooking(
 					props.token,
 					props.id,
@@ -495,7 +494,7 @@ const CalendarPage = observer((props) => {
 				{loadingBookings && (
 					<div className='spinner-wrap'>
 						<div
-							class='spinner-grow bg-primary'
+							className='spinner-grow bg-primary'
 							style={{ width: "3rem", height: "3rem" }}></div>
 					</div>
 				)}

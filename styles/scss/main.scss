@@ -11,10 +11,11 @@
 }
 
 .main {
-	border: 1px solid #eaeaea;
-	border-radius: 10px;
+	border: 1px solid #efefef;
+	border-radius: 15px;
 	flex: 0 0 100%;
 	max-width: 100%;
+	overflow: hidden;
 }
 
 @include media-breakpoint-up(lg) {
@@ -302,6 +303,51 @@ select::-webkit-scrollbar-thumb {
 	}
 
 	&.active .calendar-wrap {
+		pointer-events: none;
 		opacity: 0.4;
+	}
+}
+
+.rez-list {
+	padding: 30px;
+	background-color: #fdfdfd;
+	@include media-breakpoint-up(lg) {
+		padding: 55px 45px;
+	}
+	.table {
+		border-radius: 15px;
+		background-color: #f7f7f7;
+		td {
+			border-left: none;
+			border-right: none;
+			padding: 10px;
+			@include media-breakpoint-up(lg) {
+				padding: 20px 40px;
+			}
+		}
+		tr:first-child {
+			border-top: none;
+		}
+		tr:last-child {
+			border-bottom: none;
+		}
+		.btn {
+			margin: -10px 0;
+			border-radius: 4px;
+		}
+	}
+}
+
+.recurrent-booking.recurrent-booking {
+	td {
+		padding: 5px;
+		@include media-breakpoint-up(lg) {
+			padding: 10px 40px;
+		}
+	}
+
+	&,
+	&-head {
+		background-color: white;
 	}
 }

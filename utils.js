@@ -13,6 +13,38 @@ export function formatDateHMS(date) {
 	return [hours, minutes, seconds].join(":");
 }
 
+// function getDayName(dateStr, locale)
+// {
+//     var date = new Date(dateStr);
+//     return ;
+// }
+
+export function formatDateReadable(date) {
+	var d = new Date(date),
+		hours = "" + d.getHours(),
+		minutes = "" + d.getMinutes(),
+		dayName = d.toLocaleDateString("ro-RO", { weekday: "long" }),
+		day = d.getDay(),
+		monthName = d.toLocaleString("ro-RO", { month: "long" });
+
+	if (hours.length < 2) hours = "0" + hours;
+	if (minutes.length < 2) minutes = "0" + minutes;
+
+	return `${dayName} ${day} ${monthName}, ora ${hours}:${minutes}`;
+}
+
+export function formatDateDH(date) {
+	var d = new Date(date),
+		hours = "" + d.getHours(),
+		minutes = "" + d.getMinutes(),
+		dayName = d.toLocaleDateString("ro-RO", { weekday: "long" });
+
+	if (hours.length < 2) hours = "0" + hours;
+	if (minutes.length < 2) minutes = "0" + minutes;
+
+	return `${dayName} , ora ${hours}:${minutes}`;
+}
+
 export function formatDateYMDHM(date) {
 	var d = new Date(date),
 		month = "" + (d.getMonth() + 1),

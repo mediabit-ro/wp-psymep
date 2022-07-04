@@ -18,12 +18,14 @@ const Home = observer((props) => {
 		const categories = Object.values(props);
 		categories.pop();
 
+		console.log("Categories", categories);
+
 		store.locations = categories.filter((item) => item.parent === 0);
 
 		store.providers = categories.filter((item) => item.parent !== 0);
 	}, []);
 
-	console.log("Locations", store.locations, toJS(store.providers));
+	console.log("providers", toJS(store.providers));
 
 	return (
 		<Layout>
@@ -89,7 +91,7 @@ Home.getInitialProps = (ctx) => {
 	};
 
 	return fetch(
-		"https://mediabit.ro/booking/wp-json/wp/v2/categories?acf_format=standard",
+		"https://mediabit.ro/booking/wp-json/wp/v2/categories?acf_format=standard&per_page=100",
 		requestOptions
 	)
 		.then((response) => response.json())
@@ -101,8 +103,6 @@ Home.getInitialProps = (ctx) => {
 			console.log("error", error);
 			redirectOnError();
 		});
-
-	return { providers, locations };
 };
 
 export default withAuthSync(Home);

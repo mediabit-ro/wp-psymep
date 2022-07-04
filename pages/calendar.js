@@ -94,10 +94,13 @@ const CalendarPage = observer((props) => {
 			);
 		}
 
+		const now = formatDateYMD(new Date());
+		const weekStart = formatDateYMD(getStartWeek(view));
+
 		fetch(
-			`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_start=${formatDateYMD(
-				getStartWeek(view)
-			)}&data_end=${formatDateYMD(getEndWeek(view))}&status=private&author=${
+			`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_start=${
+				now > weekStart ? now : weekStart
+			}&data_end=${formatDateYMD(getEndWeek(view))}&status=private&author=${
 				props.id
 			}` +
 				filter +
@@ -335,6 +338,12 @@ const CalendarPage = observer((props) => {
 		);
 	};
 
+	const recurentEventsHandler = (e) => {
+		let value = Number(e.target.value);
+		if (value > 60) value = 60;
+		setRecurrentEvents(value);
+	};
+
 	return (
 		<Layout>
 			<Head>
@@ -405,7 +414,8 @@ const CalendarPage = observer((props) => {
 							{recurrent && (
 								<input
 									value={recurrentEvents}
-									onInput={(e) => setRecurrentEvents(e.target.value)}
+									type='number'
+									onInput={(e) => recurentEventsHandler(e)}
 									className='form-control w-auto'
 								/>
 							)}

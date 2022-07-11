@@ -16,6 +16,7 @@ import {
 	getEndWeek,
 	selectTimes,
 	checkAvailableTime,
+	invertColor,
 } from "../utils";
 import Router from "next/router";
 import "moment/locale/ro";
@@ -72,8 +73,10 @@ const CalendarPage = observer((props) => {
 	const [times, setTimes] = useState([]);
 
 	const selectEventHandler = (event) => {
-		setShowRez(true);
-		setDataRez(event);
+		if (event.start.getTime() > new Date().getTime()) {
+			setShowRez(true);
+			setDataRez(event);
+		}
 	};
 
 	useEffect(() => {
@@ -160,6 +163,7 @@ const CalendarPage = observer((props) => {
 						start: new Date(time.start),
 						end: new Date(time.end),
 						provider_id: time.provider_id,
+						id: time.id,
 					}))
 				);
 				setLoadingBookings(false);
@@ -174,7 +178,18 @@ const CalendarPage = observer((props) => {
 
 		const modalDataObj = new Date(modalData);
 
+		modalDataObj.setHours(Number(selectedTime.split(":")[0]));
+		modalDataObj.setMinutes(Number(selectedTime.split(":")[1]));
+
 		const endDate = new Date(modalDataObj.getTime() + duration * 60000);
+
+		console.log(
+			"Selected time",
+			selectedTime,
+			Number(selectedTime.split(":")[0]),
+			Number(selectedTime.split(":")[1]),
+			modalDataObj
+		);
 
 		const addBooking = (modalData, recurrentId) => {
 			const modalDataObj = new Date(modalData);
@@ -202,7 +217,7 @@ const CalendarPage = observer((props) => {
 				acf: {
 					client_id: 1,
 					provider_id: provider,
-					start_date: modalData,
+					start_date: modalDataObj,
 					end_date: endDate,
 					location: "1",
 					status: "test",
@@ -264,13 +279,13 @@ const CalendarPage = observer((props) => {
 			}, 5000);
 			setLoading(false);
 		} else {
-			if (!recurrent) addBooking(modalData);
+			if (!recurrent) addBooking(modalDataObj);
 			else {
 				recurrentBooking(
 					props.token,
 					props.id,
 					store.activeProviders,
-					modalData,
+					modalDataObj,
 					recurrentEvents,
 					addBooking,
 					duration,
@@ -287,7 +302,7 @@ const CalendarPage = observer((props) => {
 			(provider) => provider.id === event.provider_id
 		);
 
-		let backgroundColor = provider ? provider.acf.culoare : "#fff",
+		let backgroundColor = provider ? provider.acf.culoare : "#ffffff",
 			opacity;
 
 		if (event.title) opacity = 0.8;
@@ -297,7 +312,7 @@ const CalendarPage = observer((props) => {
 			backgroundColor,
 			borderRadius: "0px",
 			opacity,
-			color: "black",
+			color: invertColor(backgroundColor, true),
 			border: "0px",
 			display: "block",
 			pointerEvents: event.title ? "auto" : "none",
@@ -322,7 +337,10 @@ const CalendarPage = observer((props) => {
 	};
 
 	const slotSelectHandler = (data) => {
-		if (new Date(data.start).getTime() > Date.now()) {
+		if (
+			new Date(data.start).getHours() < 23 &&
+			new Date(data.start).getTime() > Date.now()
+		) {
 			handleShow();
 			setModalData(data.start);
 			setSelectedTime(removeSeconds(formatDateHMS(data.start)));

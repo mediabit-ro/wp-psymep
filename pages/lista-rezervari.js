@@ -21,6 +21,8 @@ const Rezerevari = observer((props) => {
 	const [bookings, setBookings] = useState([]);
 	const { token, id } = props;
 
+	console.log("Bookings", bookings);
+
 	useEffect(() => {
 		// Headers
 		var myHeaders = new Headers();
@@ -90,6 +92,17 @@ const Rezerevari = observer((props) => {
 
 	// Cancel simple
 	const cancelBookingHandler = (id, from) => {
+		if (from) {
+			const booking = from.recurrentBookings.find(
+				(booking) => booking.id === id
+			);
+			booking.loading = true;
+		} else {
+			const booking = bookings.find((booking) => booking.id === id);
+			booking.loading = true;
+		}
+
+		setBookings([...bookings]);
 		var myHeaders = new Headers();
 		myHeaders.append("Authorization", `Bearer ${token}`);
 
@@ -139,6 +152,8 @@ const Rezerevari = observer((props) => {
 
 	// Cancel recurrent
 	const cancelBookingRecurrentHandler = (booking) => {
+		booking.loading = true;
+		setBookings([...bookings]);
 		var myHeaders = new Headers();
 		myHeaders.append("Authorization", `Bearer ${token}`);
 		var requestOptions = {
@@ -213,8 +228,15 @@ const Rezerevari = observer((props) => {
 													? cancelBookingRecurrentHandler(booking)
 													: cancelBookingHandler(booking.id)
 											}
+											disabled={booking.loading}
 											className='btn btn-primary px-4 py-2'>
-											Anuleaza rezervare
+											Anuleaza
+											{booking.recurrent ? " recurenta" : " rezervare"}
+											{booking.loading && (
+												<div
+													className='spinner-border spinner-border-sm ms-2 text-light'
+													role='status'></div>
+											)}
 										</button>
 									</td>
 									<td>
@@ -238,11 +260,17 @@ const Rezerevari = observer((props) => {
 											</td>
 											<td>
 												<button
+													disabled={recurrentBooking.loading}
 													onClick={() =>
 														cancelBookingHandler(recurrentBooking.id, booking)
 													}
 													className='btn btn-primary px-3 py-1 small'>
 													Anuleaza rezervare
+													{recurrentBooking.loading && (
+														<div
+															className='spinner-border spinner-border-sm ms-2 text-light'
+															role='status'></div>
+													)}
 												</button>
 											</td>
 											<td></td>

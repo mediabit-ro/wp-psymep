@@ -18,9 +18,15 @@ class Store {
 				(activeProvider) => provider.id === activeProvider.id
 			)
 		)
-			this.activeProviders.splice(this.activeProviders.indexOf(provider), 1);
+			this.activeProviders.splice(
+				this.activeProviders.findIndex(
+					(activeProvider) => activeProvider.id === provider.id
+				),
+				1
+			);
 		else this.activeProviders.push(provider);
 		this.refreshTimes = !this.refreshTimes;
+		console.log("activeProviders", toJS(this.activeProviders));
 	}
 }
 

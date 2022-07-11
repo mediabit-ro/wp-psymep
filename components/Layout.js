@@ -59,7 +59,7 @@ const Layout = observer(({ children }) => {
 
 					<div style={{ margin: "-15px 0 0 10px" }}>
 						{store.providers.map((provider) => (
-							<div key={"sbapkey" + provider.id} className='form-check'>
+							<div key={Math.random()} className='form-check'>
 								<input
 									className='form-check-input'
 									type='checkbox'
@@ -99,7 +99,7 @@ const Layout = observer(({ children }) => {
 						</Link>
 					</div>
 					<div className='navbar-item'>
-						<button onClick={logout} className='btn btn-link'>
+						<button onClick={logout} className='btn btn-link p-0 ps-2'>
 							<i className='bi bi-box-arrow-right'></i>
 							Deconectare
 						</button>
@@ -141,7 +141,7 @@ const Layout = observer(({ children }) => {
 
 					<div style={{ margin: "-15px 0 0 10px" }}>
 						{store.providers.map((provider) => (
-							<div key={"sbapkey" + provider.id} className='form-check'>
+							<div key={Math.random()} className='form-check'>
 								<input
 									className='form-check-input'
 									type='checkbox'
@@ -152,7 +152,7 @@ const Layout = observer(({ children }) => {
 									}}
 									onChange={() => store.toggleProvider(provider)}
 									checked={store.activeProviders.find(
-										(activeProvider) => activeProvider.id === provider.id
+										(activeProvider) => activeProvider.id == provider.id
 									)}
 									id={"sbap" + provider.id}
 								/>
@@ -179,7 +179,7 @@ const Layout = observer(({ children }) => {
 						</Link>
 					</div>
 					<div className='navbar-item'>
-						<button onClick={logout} className='btn btn-link'>
+						<button onClick={logout} className='btn btn-link p-0 ps-2'>
 							<i className='bi bi-box-arrow-right'></i>
 							Deconectare
 						</button>

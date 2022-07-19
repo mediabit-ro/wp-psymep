@@ -243,15 +243,6 @@ export function checkClientTime(bookings, startDate, endDate) {
 		const currentStartDate = new Date(startDate);
 		const currentEndDate = new Date(endDate);
 
-		// bookingStartDate.lowerHours(1);
-		// bookingEndDate.lowerHours(1);
-
-		// console.log("--------------");
-		// console.log(currentStartDate);
-		// console.log(currentEndDate);
-		// console.log(bookingStartDate);
-		// console.log(bookingEndDate);
-
 		if (
 			currentStartDate.getTime() >= bookingStartDate.getTime() &&
 			currentStartDate.getTime() < bookingEndDate.getTime()

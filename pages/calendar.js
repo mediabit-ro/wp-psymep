@@ -339,7 +339,8 @@ const CalendarPage = observer((props) => {
 	const slotSelectHandler = (data) => {
 		if (
 			new Date(data.start).getHours() < 23 &&
-			new Date(data.start).getTime() > Date.now()
+			new Date(data.start).getTime() > Date.now() &&
+			new Date(2022, 7, 1, 0, 0, 0).getTime() < new Date(data.start).getTime()
 		) {
 			handleShow();
 			setModalData(data.start);

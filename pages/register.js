@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Router from "next/router";
 import fetch from "isomorphic-unfetch";
 import React, { useState } from "react";
 import { login } from "../utils/auth";
@@ -16,18 +15,43 @@ export default function Login() {
 	const [email, setEmail] = useState("");
 	const [password1, setPassword1] = useState("");
 	const [password2, setPassword2] = useState("");
+	const [loading1, setLoading1] = useState(false);
+	const [loading2, setLoading2] = useState(false);
 	const [error1, setError1] = useState(false);
 	const [error2, setError2] = useState(false);
 	const [error3, setError3] = useState(false);
 	const [step2, setStep2] = useState(false);
 	const [step3, setStep3] = useState(false);
 	const checkEmailHandler = () => {
-		// setError1("Emailul este deja folosit.");
 		if (!ValidateEmail(email)) {
 			setError1("Emailul nu este valid");
 		} else {
-			setStep2(true);
-			setError1("");
+			setLoading1(true);
+
+			var requestOptions = {
+				method: "GET",
+				redirect: "follow",
+			};
+
+			fetch(
+				`https://mediabit.ro/booking/wp-json/newpass/user/?email=${email}`,
+				requestOptions
+			)
+				.then((response) => response.json())
+				.then((result) => {
+					if (result.code === "no_user") {
+						setError1(result.message);
+					} else if (result.code == "user_ok") {
+						setStep2(true);
+						setError1("");
+					}
+					console.log("result", result);
+					setLoading1(false);
+				})
+				.catch((error) => {
+					setError1(error.message);
+					setLoading1(false);
+				});
 		}
 	};
 
@@ -39,8 +63,32 @@ export default function Login() {
 			setError2("");
 			setError3("Parolele nu coincid");
 		} else {
-			setStep2(false);
-			setStep3(true);
+			setLoading2(true);
+
+			var requestOptions = {
+				method: "GET",
+				redirect: "follow",
+			};
+
+			fetch(
+				`https://mediabit.ro/booking/wp-json/newpass/user/?email=${email}&pass=${password1}`,
+				requestOptions
+			)
+				.then((response) => response.json())
+				.then((result) => {
+					console.log("result", result);
+					if (result.code === "pass_ok") {
+						setStep2(false);
+						setStep3(true);
+					} else if (result.code === "invalid_password") {
+						setError2(result.message);
+					}
+					setLoading2(false);
+				})
+				.catch((error) => {
+					setError2(error.message);
+					setLoading2(false);
+				});
 		}
 	};
 
@@ -55,7 +103,9 @@ export default function Login() {
 						className='p-5 mb-5 bg-white rounded-lg'
 						style={{ maxWidth: "100%", width: "500px" }}>
 						<div className='h3 mb-3'>
-							{step3 ? "Contul a fost creat" : "Creeaza cont nou"}
+							{!step3 && !step2 && "Creeaza cont nou"}
+							{step2 && "Seteaza o parola"}
+							{step3 && "Contul a fost creat"}
 						</div>
 						{!step3 && (
 							<div className='form-group'>
@@ -76,8 +126,14 @@ export default function Login() {
 								// disabled={loading}
 								className='btn btn-primary w-100 mt-2'
 								onClick={checkEmailHandler}
+								disabled={loading1}
 								type='submit'>
 								Trimite email
+								{loading1 && (
+									<div
+										className='spinner-border text-light spinner-border-sm'
+										role='status'></div>
+								)}
 							</button>
 						)}
 						{step2 && (
@@ -106,8 +162,14 @@ export default function Login() {
 									// disabled={loading}
 									className='btn btn-primary w-100 mt-2'
 									onClick={createAccountHandler}
+									disabled={loading2}
 									type='submit'>
 									Creeaza cont
+									{loading2 && (
+										<div
+											className='spinner-border text-light spinner-border-sm'
+											role='status'></div>
+									)}
 								</button>
 							</>
 						)}

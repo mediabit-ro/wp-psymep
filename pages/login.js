@@ -3,6 +3,7 @@ import Router from "next/router";
 import fetch from "isomorphic-unfetch";
 import React, { useState } from "react";
 import { login } from "../utils/auth";
+import Link from "next/link";
 
 export default function Login() {
 	const [userData, setUserData] = useState({ username: "", error: "" });
@@ -127,6 +128,12 @@ export default function Login() {
 								<p className='error'>Error: {userData.error}</p>
 							)}
 						</form>
+						<div className='text-center mt-2'>
+							<div>sau</div>
+							<Link href='/register'>
+								<a>Creeaza un cont</a>
+							</Link>
+						</div>
 					</div>
 				</div>
 			</div>

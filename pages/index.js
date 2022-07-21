@@ -36,32 +36,36 @@ const Home = observer((props) => {
 			</Head>
 			<div className='row'>
 				{/* Locations loop */}
-				{store.locations.map((location) => (
-					<div
-						key={"dlc" + location.id}
-						style={{ maxWidth: "600px" }}
-						className='col-lg-6 mb-3'>
-						<div className='p-lg-4 p-3 rounded bg-white'>
-							<h5>{location.name}</h5>
-							<div className='row'>
-								{/* Providers loop */}
-								{store.providers
-									.filter((provider) => provider.parent === location.id)
-									.map((provider) => (
-										<div
-											key={"plc" + provider.id + "dlc" + location.id}
-											className='col-6 col-md-4 mb-3'>
-											{/* Providers active status */}
-											<Provider data={provider} />
-										</div>
-									))}
+				{store.locations
+					.filter((location) =>
+						store.providers.find((provider) => provider.parent === location.id)
+					)
+					.map((location) => (
+						<div
+							key={"dlc" + location.id}
+							style={{ maxWidth: "600px" }}
+							className='col-lg-6 mb-3'>
+							<div className='p-lg-4 p-3 rounded bg-white'>
+								<h5>{location.name}</h5>
+								<div className='row'>
+									{/* Providers loop */}
+									{store.providers
+										.filter((provider) => provider.parent === location.id)
+										.map((provider) => (
+											<div
+												key={"plc" + provider.id + "dlc" + location.id}
+												className='col-6 col-md-4 mb-3'>
+												{/* Providers active status */}
+												<Provider data={provider} />
+											</div>
+										))}
+								</div>
+								{/* Activate location  */}
 							</div>
-							{/* Activate location  */}
 						</div>
-					</div>
-				))}
+					))}
 			</div>
-			{store.activeProviders.length && (
+			{store.activeProviders.length !== 0 && (
 				<div className='p-3'>
 					<Link href='/calendar'>
 						<a className='btn btn-primary px-5'>Vezi calendar</a>
@@ -91,7 +95,7 @@ Home.getInitialProps = (ctx) => {
 	};
 
 	return fetch(
-		"https://mediabit.ro/booking/wp-json/wp/v2/categories?acf_format=standard&per_page=100",
+		"https://mediabit.ro/booking/wp-json/wp/v2/categories?acf_format=standard&per_page=100&orderby=slug",
 		requestOptions
 	)
 		.then((response) => response.json())

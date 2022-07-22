@@ -8,6 +8,7 @@ import Link from "next/link";
 export default function Login() {
 	const [userData, setUserData] = useState({ username: "", error: "" });
 	const [loading, setLoading] = useState();
+	const [error, setError] = useState();
 
 	async function handleSubmit(event) {
 		setLoading(true);
@@ -32,37 +33,41 @@ export default function Login() {
 		)
 			.then((response) => response.json())
 			.then((response) => {
-				console.log("response", response);
+				console.log("response token", response);
 				const { token } = response;
 
-				var myHeaders = new Headers();
-				myHeaders.append("Authorization", `Bearer ${token}`);
+				if (token) {
+					var myHeaders = new Headers();
+					myHeaders.append("Authorization", `Bearer ${token}`);
 
-				var requestOptions = {
-					method: "GET",
-					headers: myHeaders,
-					redirect: "follow",
-				};
+					var requestOptions = {
+						method: "GET",
+						headers: myHeaders,
+						redirect: "follow",
+					};
 
-				fetch(
-					"https://mediabit.ro/booking/wp-json/wp/v2/users/me",
-					requestOptions
-				)
-					.then((response) => response.json())
-					.then((response) => {
-						console.log("response inner", response);
-						const { id } = response;
+					fetch(
+						"https://mediabit.ro/booking/wp-json/wp/v2/users/me",
+						requestOptions
+					)
+						.then((response) => response.json())
+						.then((response) => {
+							console.log("response inner", response);
+							const { id } = response;
 
-						console.log("test", token, id);
+							console.log("test", token, id);
 
-						login({ token, id });
-					})
-					.catch((error) => {
-						console.error(
-							"You have an error in your code or there are Network issues.",
-							error
-						);
-					});
+							login({ token, id });
+						})
+						.catch((error) => {
+							console.error(
+								"You have an error in your code or there are Network issues.",
+								error
+							);
+						});
+				} else {
+					setError("Sometihng went wrong");
+				}
 			})
 			.catch((error) => {
 				console.error(
@@ -125,7 +130,14 @@ export default function Login() {
 							</button>
 
 							{userData.error && (
-								<p className='error'>Error: {userData.error}</p>
+								<div className='alert alert-danger mt-3' role='alert'>
+									Error: {userData.error}
+								</div>
+							)}
+							{error && (
+								<div className='alert alert-danger mt-3' role='alert'>
+									{error}
+								</div>
 							)}
 						</form>
 						<div className='text-center mt-2'>

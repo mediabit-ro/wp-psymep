@@ -74,7 +74,9 @@ const Layout = observer(({ children }) => {
 									)}
 									id={"sbap" + provider.id}
 								/>
-								<label for={"sbap" + provider.id} className='form-check-label'>
+								<label
+									htmlFor={"sbap" + provider.id}
+									className='form-check-label'>
 									{provider.name}
 								</label>
 							</div>
@@ -158,7 +160,9 @@ const Layout = observer(({ children }) => {
 									)}
 									id={"sbapd" + provider.id}
 								/>
-								<label for={"sbapd" + provider.id} className='form-check-label'>
+								<label
+									htmlFor={"sbapd" + provider.id}
+									className='form-check-label'>
 									{provider.name}
 								</label>
 							</div>

@@ -74,7 +74,9 @@ const Layout = observer(({ children }) => {
 									)}
 									id={"sbap" + provider.id}
 								/>
-								<label className='form-check-label'>{provider.name}</label>
+								<label for={"sbap" + provider.id} className='form-check-label'>
+									{provider.name}
+								</label>
 							</div>
 						))}
 					</div>
@@ -154,9 +156,11 @@ const Layout = observer(({ children }) => {
 									checked={store.activeProviders.find(
 										(activeProvider) => activeProvider.id == provider.id
 									)}
-									id={"sbap" + provider.id}
+									id={"sbapd" + provider.id}
 								/>
-								<label className='form-check-label'>{provider.name}</label>
+								<label for={"sbapd" + provider.id} className='form-check-label'>
+									{provider.name}
+								</label>
 							</div>
 						))}
 					</div>

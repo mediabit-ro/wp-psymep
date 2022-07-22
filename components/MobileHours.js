@@ -1,5 +1,6 @@
 export default function MobileHours() {
 	const hours = [
+		"7:00",
 		"8:00",
 		"9:00",
 		"10:00",
@@ -15,6 +16,7 @@ export default function MobileHours() {
 		"20:00",
 		"21:00",
 		"22:00",
+		"23:00",
 	];
 
 	return (

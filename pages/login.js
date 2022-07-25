@@ -66,6 +66,7 @@ export default function Login() {
 							);
 						});
 				} else {
+					setLoading(false);
 					setError("Sometihng went wrong");
 				}
 			})

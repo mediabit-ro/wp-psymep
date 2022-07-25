@@ -60,18 +60,21 @@ const Home = observer((props) => {
 											</div>
 										))}
 								</div>
+								<Link href='/calendar'>
+									<a className='btn btn-primary'>Vezi calendar</a>
+								</Link>
 								{/* Activate location  */}
 							</div>
 						</div>
 					))}
 			</div>
-			{store.activeProviders.length !== 0 && (
+			{/* {store.activeProviders.length !== 0 && (
 				<div className='p-3'>
 					<Link href='/calendar'>
 						<a className='btn btn-primary px-5'>Vezi calendar</a>
 					</Link>
 				</div>
-			)}
+			)} */}
 		</Layout>
 	);
 });

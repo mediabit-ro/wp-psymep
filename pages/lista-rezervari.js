@@ -230,8 +230,8 @@ const Rezerevari = observer((props) => {
 											}
 											disabled={booking.loading}
 											className='btn btn-primary px-4 py-2'>
-											Anuleaza
-											{booking.recurrent ? " recurenta" : " rezervare"}
+											Anulează
+											{booking.recurrent ? " recurentă" : " rezervare"}
 											{booking.loading && (
 												<div
 													className='spinner-border spinner-border-sm ms-2 text-light'
@@ -265,7 +265,7 @@ const Rezerevari = observer((props) => {
 														cancelBookingHandler(recurrentBooking.id, booking)
 													}
 													className='btn btn-primary px-3 py-1 small'>
-													Anuleaza rezervare
+													Anulează rezervare
 													{recurrentBooking.loading && (
 														<div
 															className='spinner-border spinner-border-sm ms-2 text-light'

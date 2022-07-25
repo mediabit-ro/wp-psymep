@@ -41,14 +41,6 @@ const Layout = observer(({ children }) => {
 				</Offcanvas.Header>
 				<Offcanvas.Body>
 					<div className='navbar-item'>
-						<Link href='/'>
-							<a className={currentRoute === "/" ? "active" : ""}>
-								<i className='bi bi-columns-gap'></i>
-								Locatii
-							</a>
-						</Link>
-					</div>
-					<div className='navbar-item'>
 						<Link href='/calendar'>
 							<a className={currentRoute === "/calendar" ? "active" : ""}>
 								<i className='bi bi-calendar-event'></i>
@@ -84,6 +76,15 @@ const Layout = observer(({ children }) => {
 					</div>
 
 					<div className='navbar-item'>
+						<Link href='/'>
+							<a className={currentRoute === "/" ? "active" : ""}>
+								<i className='bi bi-columns-gap'></i>
+								Locații
+							</a>
+						</Link>
+					</div>
+
+					<div className='navbar-item'>
 						<Link href='/lista-rezervari'>
 							<a
 								className={currentRoute === "/lista-rezervari" ? "active" : ""}>
@@ -95,7 +96,7 @@ const Layout = observer(({ children }) => {
 					<div className='navbar-item'>
 						<Link
 							className={currentRoute === "/contact" ? "active" : ""}
-							href='/contact'>
+							href='https://www.psymep.ro/'>
 							<a>
 								<i className='bi bi-person-lines-fill'></i>
 								Contact
@@ -126,14 +127,6 @@ const Layout = observer(({ children }) => {
 			</div>
 			<div className='main-wrap'>
 				<div className='navbar-main d-none d-lg-block'>
-					<div className='navbar-item'>
-						<Link href='/'>
-							<a className={currentRoute === "/" ? "active" : ""}>
-								<i className='bi bi-columns-gap'></i>
-								Locatii
-							</a>
-						</Link>
-					</div>
 					<div className='navbar-item'>
 						<Link href='/calendar'>
 							<a className={currentRoute === "/calendar" ? "active" : ""}>
@@ -170,6 +163,15 @@ const Layout = observer(({ children }) => {
 					</div>
 
 					<div className='navbar-item'>
+						<Link href='/'>
+							<a className={currentRoute === "/" ? "active" : ""}>
+								<i className='bi bi-columns-gap'></i>
+								Locații
+							</a>
+						</Link>
+					</div>
+
+					<div className='navbar-item'>
 						<Link href='/lista-rezervari'>
 							<a
 								className={currentRoute === "/lista-rezervari" ? "active" : ""}>
@@ -179,7 +181,7 @@ const Layout = observer(({ children }) => {
 						</Link>
 					</div>
 					<div className='navbar-item'>
-						<Link href='/contact'>
+						<Link href='https://www.psymep.ro/'>
 							<a className={currentRoute === "/contact" ? "active" : ""}>
 								<i className='bi bi-person-lines-fill'></i>
 								Contact

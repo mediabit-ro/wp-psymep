@@ -44,9 +44,9 @@ function removeSeconds(string) {
 }
 
 const CalendarPage = observer((props) => {
-	useEffect(() => {
-		if (store.providers.length === 0) Router.push("/");
-	}, []);
+	// useEffect(() => {
+	// 	if (store.providers.length === 0) Router.push("/");
+	// }, []);
 
 	const [view, setView] = useState(new Date());
 	const localizer = momentLocalizer(moment);
@@ -78,6 +78,31 @@ const CalendarPage = observer((props) => {
 			setDataRez(event);
 		}
 	};
+
+	useEffect(() => {
+		var myHeaders = new Headers();
+		myHeaders.append("Authorization", `Bearer ${props.token}`);
+
+		var requestOptions = {
+			method: "GET",
+			headers: myHeaders,
+			redirect: "follow",
+		};
+
+		fetch(
+			"https://mediabit.ro/booking/wp-json/wp/v2/categories?acf_format=standard&per_page=100&orderby=slug",
+			requestOptions
+		)
+			.then((response) => response.json())
+			.then((result) => {
+				store.locations = result.filter((item) => item.parent === 0);
+
+				store.providers = result.filter((item) => item.parent !== 0);
+			})
+			.catch((error) => {
+				console.log("error", error);
+			});
+	}, []);
 
 	useEffect(() => {
 		setLoadingBookings(true);

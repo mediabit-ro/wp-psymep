@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import store from "../store/store";
-import { formatDateHMS, formatDateYMD } from "./../utils";
+import { formatDateHMS, formatDateYMD, formatDateReadableDM } from "./../utils";
 import { toJS } from "mobx";
 export default function BookingModal({
 	data,
@@ -54,7 +54,7 @@ export default function BookingModal({
 								<tr>
 									<th scope='col'>Camera</th>
 									<th scope='col'>Data</th>
-									<th scope='col'>Ora</th>
+									<th scope='col'>Oră</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -66,7 +66,7 @@ export default function BookingModal({
 											).name
 										}
 									</td>
-									<td>{formatDateYMD(data.start)}</td>
+									<td>{formatDateReadableDM(data.start)}</td>
 									<td>{formatDateHMS(data.start)}</td>
 								</tr>
 							</tbody>
@@ -75,7 +75,7 @@ export default function BookingModal({
 							<button
 								onClick={() => cancelBookingHandler()}
 								className='btn btn-primary mt-3 px-5'>
-								Anuleaza rezervare
+								Anulează rezervarea
 							</button>
 						</div>
 					</Modal.Body>

@@ -33,6 +33,15 @@ export function formatDateReadable(date) {
 	return `${dayName} ${day} ${monthName}, ora ${hours}:${minutes}`;
 }
 
+export function formatDateReadableDM(date) {
+	var d = new Date(date),
+		dayName = d.toLocaleDateString("ro-RO", { weekday: "long" }),
+		day = d.getDate(),
+		monthName = d.toLocaleString("ro-RO", { month: "long" });
+
+	return `${dayName} ${day} ${monthName}`;
+}
+
 export function formatDateDH(date) {
 	var d = new Date(date),
 		hours = "" + d.getHours(),

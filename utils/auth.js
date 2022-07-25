@@ -6,7 +6,7 @@ import cookie from "js-cookie";
 export const login = ({ token, id }) => {
 	cookie.set("token", token, { expires: 1 });
 	cookie.set("id", id, { expires: 1 });
-	Router.push("/");
+	Router.push("/calendar");
 };
 
 export const auth = (ctx) => {

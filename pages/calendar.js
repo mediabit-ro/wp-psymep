@@ -44,9 +44,7 @@ function removeSeconds(string) {
 }
 
 const CalendarPage = observer((props) => {
-	// useEffect(() => {
-	// 	if (store.providers.length === 0) Router.push("/");
-	// }, []);
+	console.log("CalendarProps", props);
 
 	const [view, setView] = useState(new Date());
 	const localizer = momentLocalizer(moment);
@@ -72,6 +70,8 @@ const CalendarPage = observer((props) => {
 	const [events, setEvents] = useState([]);
 	const [times, setTimes] = useState([]);
 
+	const [users, setUsers] = useState([]);
+
 	const selectEventHandler = (event) => {
 		if (event.start.getTime() > new Date().getTime()) {
 			setShowRez(true);
@@ -88,6 +88,19 @@ const CalendarPage = observer((props) => {
 			headers: myHeaders,
 			redirect: "follow",
 		};
+
+		fetch(
+			"https://mediabit.ro/booking/wp-json/wp/v2/users?per_page=100",
+			requestOptions
+		)
+			.then((response) => response.json())
+			.then((result) => {
+				console.log("res", result);
+				setUsers(result);
+			})
+			.catch((error) => {
+				console.log("error", error);
+			});
 
 		fetch(
 			"https://mediabit.ro/booking/wp-json/wp/v2/categories?acf_format=standard&per_page=100&orderby=slug",
@@ -125,22 +138,30 @@ const CalendarPage = observer((props) => {
 		const now = formatDateYMD(new Date());
 		const weekStart = formatDateYMD(getStartWeek(view));
 
+		let author;
+		if (props.adminId && props.adminId === props.id) {
+			author = "";
+		} else {
+			author = "&author=" + props.id;
+		}
+
 		fetch(
 			`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_start=${
 				now > weekStart ? now : weekStart
-			}&data_end=${formatDateYMD(getEndWeek(view))}&status=private&author=${
-				props.id
-			}` +
+			}&data_end=${formatDateYMD(getEndWeek(view))}&status=private${author}` +
 				filter +
-				"&per_page=100",
+				"&per_page=500",
 			requestOptions
 		)
 			.then((response) => response.json())
 			.then((result) => {
+				console.log("Events", result);
+
 				setEvents(
 					result.map((event) => {
+						const user = users.find((user) => user.id === event.author);
 						return {
-							title: "Booking",
+							title: user ? user.name : "Booking",
 							start: new Date(event.acf.start_date),
 							end: new Date(event.acf.end_date),
 							provider_id: event.acf.provider_id,
@@ -156,46 +177,49 @@ const CalendarPage = observer((props) => {
 	}, [view]);
 
 	useEffect(() => {
-		setLoadingBookings(true);
-		var myHeaders = new Headers();
-		myHeaders.append("Authorization", `Bearer ${props.token}`);
+		if (!props.adminId || (props.adminId && props.adminId !== props.id)) {
+			setLoadingBookings(true);
+			var myHeaders = new Headers();
+			myHeaders.append("Authorization", `Bearer ${props.token}`);
 
-		var requestOptions = {
-			method: "GET",
-			headers: myHeaders,
-			redirect: "follow",
-		};
-		let filter = "";
-		if (store.activeProviders.length) {
-			filter = "&categories=";
-			store.activeProviders.forEach(
-				(provider) => (filter += provider.id + ",")
-			);
-		}
-		fetch(
-			`https://mediabit.ro/booking/wp-json/times/ocupied/?data_start=${formatDateYMD(
-				getStartWeek(view)
-			)}&data_end=${formatDateYMD(getEndWeek(view))}${filter}&author=${
-				props.id
-			}&per_page=100`,
-			requestOptions
-		)
-			.then((response) => response.json())
-			.then((result) => {
-				setTimes(
-					result.map((time) => ({
-						title: time.title,
-						start: new Date(time.start),
-						end: new Date(time.end),
-						provider_id: time.provider_id,
-						id: time.id,
-					}))
+			var requestOptions = {
+				method: "GET",
+				headers: myHeaders,
+				redirect: "follow",
+			};
+			let filter = "";
+			if (store.activeProviders.length) {
+				filter = "&categories=";
+				store.activeProviders.forEach(
+					(provider) => (filter += provider.id + ",")
 				);
-				setLoadingBookings(false);
-			})
-			.catch((error) => {
-				console.log("error", error);
-			});
+			}
+			fetch(
+				`https://mediabit.ro/booking/wp-json/times/ocupied/?data_start=${formatDateYMD(
+					getStartWeek(view)
+				)}&data_end=${formatDateYMD(getEndWeek(view))}${filter}&author=${
+					props.id
+				}&per_page=500`,
+				requestOptions
+			)
+				.then((response) => response.json())
+				.then((result) => {
+					console.log("Times", result);
+					setTimes(
+						result.map((time) => ({
+							title: time.title,
+							start: new Date(time.start),
+							end: new Date(time.end),
+							provider_id: time.provider_id,
+							id: time.id,
+						}))
+					);
+					setLoadingBookings(false);
+				})
+				.catch((error) => {
+					console.log("error", error);
+				});
+		}
 	}, [view, store.refreshTimes]);
 
 	const addEventHandler = () => {
@@ -207,14 +231,6 @@ const CalendarPage = observer((props) => {
 		modalDataObj.setMinutes(Number(selectedTime.split(":")[1]));
 
 		const endDate = new Date(modalDataObj.getTime() + duration * 60000);
-
-		console.log(
-			"Selected time",
-			selectedTime,
-			Number(selectedTime.split(":")[0]),
-			Number(selectedTime.split(":")[1]),
-			modalDataObj
-		);
 
 		const addBooking = (modalData, recurrentId) => {
 			const modalDataObj = new Date(modalData);
@@ -384,12 +400,12 @@ const CalendarPage = observer((props) => {
 
 	const recurentEventsHandler = (e) => {
 		let value = Number(e.target.value);
-		if (value > 60) value = 60;
+		if (value > 20) value = 20;
 		setRecurrentEvents(value);
 	};
 
 	return (
-		<Layout>
+		<Layout adminId={props.adminId} name={props.name}>
 			<Head>
 				<title>Create Next App</title>
 				<meta name='description' content='Generated by create next app' />
@@ -440,9 +456,7 @@ const CalendarPage = observer((props) => {
 								id='flexCheckChecked'
 								onChange={(e) => durationHandler(e)}
 							/>
-							<label className='form-check-label'>
-								Ședință de o oră și jumătate
-							</label>
+							<label className='form-check-label'>+30′</label>
 						</div>
 						<div className='form-check mb-2'>
 							<input
@@ -453,7 +467,8 @@ const CalendarPage = observer((props) => {
 								onChange={(e) => setRecurrent(!recurrent)}
 							/>
 							<label className='form-check-label'>
-								Recurentă {recurrent && " (alege numarul de repetari)"}
+								Rezervare recurentă{" "}
+								{recurrent && " (alege numarul de repetari)"}
 							</label>
 							{recurrent && (
 								<input
@@ -467,7 +482,7 @@ const CalendarPage = observer((props) => {
 					</div>
 					<div className='d-flex align-items-center'>
 						<i className='h4 mb-0 bi bi-geo-alt me-3'></i>
-						<label>Alege camera</label>
+						<label>Cabinet</label>
 					</div>
 					<div className='form-check mb-2 ms-3'>
 						<select
@@ -558,13 +573,14 @@ const CalendarPage = observer((props) => {
 });
 
 CalendarPage.getInitialProps = (ctx) => {
-	const { token, id } = nextCookie(ctx);
+	const { token, id, adminId } = nextCookie(ctx);
 
 	if (!token || !id) Router.push("/login");
 
 	return {
 		token,
 		id,
+		adminId,
 	};
 };
 

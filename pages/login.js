@@ -4,6 +4,7 @@ import fetch from "isomorphic-unfetch";
 import React, { useState } from "react";
 import { login } from "../utils/auth";
 import Link from "next/link";
+import store from "../store/store";
 
 export default function Login() {
 	const [userData, setUserData] = useState({ username: "", error: "" });
@@ -52,12 +53,8 @@ export default function Login() {
 					)
 						.then((response) => response.json())
 						.then((response) => {
-							console.log("response inner", response);
-							const { id } = response;
-
-							console.log("test", token, id);
-
-							login({ token, id });
+							const { id, name } = response;
+							login({ token, id, name });
 						})
 						.catch((error) => {
 							console.error(

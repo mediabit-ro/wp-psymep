@@ -45,14 +45,14 @@ export default function BookingModal({
 				<Modal show={showRez} onHide={() => setShowRez(false)}>
 					<Modal.Header closeButton>
 						<div>
-							<h5 className='w-100'>Programare {data.title}</h5>
+							<h5 className='w-100'>Rezervare</h5>
 						</div>
 					</Modal.Header>
 					<Modal.Body>
 						<table className='table table-bordered'>
 							<thead>
 								<tr>
-									<th scope='col'>Camera</th>
+									<th scope='col'>Cabinet</th>
 									<th scope='col'>Data</th>
 									<th scope='col'>Oră</th>
 								</tr>
@@ -75,7 +75,7 @@ export default function BookingModal({
 							<button
 								onClick={() => cancelBookingHandler()}
 								className='btn btn-primary mt-3 px-5'>
-								Anulează rezervarea
+								Anulează Rezervarea
 							</button>
 						</div>
 					</Modal.Body>

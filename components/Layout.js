@@ -9,7 +9,7 @@ import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import Head from "next/head";
 
-const Layout = observer(({ children }) => {
+const Layout = observer(({ children, adminId, name }) => {
 	const router = useRouter();
 	const currentRoute = router.pathname;
 	const [dropdownState, setDropdownState] = useState(false);
@@ -94,15 +94,21 @@ const Layout = observer(({ children }) => {
 						</Link>
 					</div>
 					<div className='navbar-item'>
-						<Link
-							className={currentRoute === "/contact" ? "active" : ""}
-							href='https://www.psymep.ro/'>
-							<a>
-								<i className='bi bi-person-lines-fill'></i>
-								Contact
-							</a>
-						</Link>
+						<a rel='noreferrer' href='https://www.psymep.ro/' target='_blank'>
+							<i className='bi bi-person-lines-fill'></i>
+							Contact
+						</a>
 					</div>
+					{adminId && (
+						<div className='navbar-item'>
+							<Link href='/accounts'>
+								<a className={currentRoute === "/accounts" ? "active" : ""}>
+									<i className='bi bi-people-fill'></i>
+									Accounts
+								</a>
+							</Link>
+						</div>
+					)}
 					<div className='navbar-item'>
 						<button onClick={logout} className='btn btn-link p-0 ps-2'>
 							<i className='bi bi-box-arrow-right'></i>
@@ -119,6 +125,9 @@ const Layout = observer(({ children }) => {
 						height='32'
 						className='img-fluid'
 					/>
+				</div>
+				<div className='ms-auto'>
+					<div className='small rounded bg-light p-1'>{name}</div>
 				</div>
 				<i
 					onClick={handleShow}
@@ -181,13 +190,21 @@ const Layout = observer(({ children }) => {
 						</Link>
 					</div>
 					<div className='navbar-item'>
-						<Link href='https://www.psymep.ro/'>
-							<a className={currentRoute === "/contact" ? "active" : ""}>
-								<i className='bi bi-person-lines-fill'></i>
-								Contact
-							</a>
-						</Link>
+						<a rel='noreferrer' target='_blank' href='https://www.psymep.ro/'>
+							<i className='bi bi-person-lines-fill'></i>
+							Contact
+						</a>
 					</div>
+					{adminId && (
+						<div className='navbar-item'>
+							<Link href='/accounts'>
+								<a className={currentRoute === "/accounts" ? "active" : ""}>
+									<i className='bi bi-people-fill'></i>
+									Accounts
+								</a>
+							</Link>
+						</div>
+					)}
 					<div className='navbar-item'>
 						<button onClick={logout} className='btn btn-link p-0 ps-2'>
 							<i className='bi bi-box-arrow-right'></i>

@@ -5,6 +5,7 @@ class Store {
 	constructor() {
 		makeAutoObservable(this);
 	}
+	name = "";
 	providers = [];
 	locations = [];
 	activeProviders = [];

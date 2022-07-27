@@ -254,6 +254,7 @@ const CalendarPage = observer((props) => {
 				title: "Booking",
 				content: "booking",
 				status: "private",
+				author: props.id,
 				categories: [provider],
 				acf: {
 					client_id: 1,
@@ -448,16 +449,27 @@ const CalendarPage = observer((props) => {
 						- {getEndDate(selectedTime, duration)}
 					</div>
 					<div style={{ marginLeft: "40px" }}>
-						<div className='form-check mb-2'>
-							<input
-								className='form-check-input'
-								type='checkbox'
-								value=''
-								id='flexCheckChecked'
-								onChange={(e) => durationHandler(e)}
-							/>
-							<label className='form-check-label'>+30′</label>
-						</div>
+						{props.adminId && props.adminId === props.id ? (
+							<div className='form-check'>
+								<label>Durata</label>
+								<input
+									className='form-control'
+									type='number'
+									onChange={(e) => setDuration(e.target.value)}
+								/>
+							</div>
+						) : (
+							<div className='form-check mb-2'>
+								<input
+									className='form-check-input'
+									type='checkbox'
+									value=''
+									id='flexCheckChecked'
+									onChange={(e) => durationHandler(e)}
+								/>
+								<label className='form-check-label'>+30′</label>
+							</div>
+						)}
 						<div className='form-check mb-2'>
 							<input
 								className='form-check-input'

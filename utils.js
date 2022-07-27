@@ -92,7 +92,9 @@ export function getEndDate(selectedTime, duration) {
 	if (selectedTime) {
 		const selectedTimeArr = selectedTime.split(":");
 		const selectedTimeValue =
-			Number(selectedTimeArr[0]) * 60 + Number(selectedTimeArr[1]) + duration;
+			Number(selectedTimeArr[0]) * 60 +
+			Number(selectedTimeArr[1]) +
+			Number(duration);
 		return (
 			doubleDigit(parseInt(selectedTimeValue / 60)) +
 			":" +

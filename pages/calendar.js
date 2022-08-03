@@ -251,7 +251,7 @@ const CalendarPage = observer((props) => {
 			myHeaders.append("Content-Type", "application/json");
 
 			var raw = JSON.stringify({
-				title: "Booking",
+				title: props.name,
 				content: "booking",
 				status: "private",
 				author: props.id,
@@ -282,16 +282,19 @@ const CalendarPage = observer((props) => {
 					if (
 						formatDateYMD(new Date(result.acf.start_date)) <=
 						formatDateYMD(getEndWeek(view))
-					)
+					) {
+						const user = users.find((user) => user.id === result.author);
 						setEvents([
 							...events,
 							{
-								title: "Booking",
+								title: user ? user.name : "Booking",
 								start: new Date(result.acf.start_date),
 								end: new Date(result.acf.end_date),
 								provider_id: result.acf.provider_id,
 							},
 						]);
+					}
+
 					setShowRez(false);
 					setLoading(false);
 					setShow(false);

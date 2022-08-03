@@ -276,13 +276,13 @@
 	}
 }
 
-select::-webkit-scrollbar {
+*::-webkit-scrollbar {
 	width: 3px;
 	// background-color: #333;
 	border-radius: 4px;
 }
 
-select::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
 	background: rgba(206, 41, 41, 0.6);
 	border-radius: 4px;
 }

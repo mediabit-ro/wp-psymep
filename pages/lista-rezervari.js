@@ -35,7 +35,7 @@ const Rezerevari = observer((props) => {
 		fetch(
 			`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_end=20240121&data_start=${formatDateYMD(
 				new Date()
-			)}&status=private&author=${id}&per_page=500`,
+			)}&status=private&author=${id}&per_page=500&orderby=filter_date`,
 			requestOptions
 		)
 			.then((response) => response.json())

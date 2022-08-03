@@ -95,7 +95,7 @@ const CalendarPage = observer((props) => {
 		)
 			.then((response) => response.json())
 			.then((result) => {
-				console.log("res", result);
+				console.log("users", result);
 				setUsers(result);
 			})
 			.catch((error) => {
@@ -144,37 +144,37 @@ const CalendarPage = observer((props) => {
 		} else {
 			author = "&author=" + props.id;
 		}
+		if (users.length)
+			fetch(
+				`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_start=${
+					now > weekStart ? now : weekStart
+				}&data_end=${formatDateYMD(getEndWeek(view))}&status=private${author}` +
+					filter +
+					"&per_page=500",
+				requestOptions
+			)
+				.then((response) => response.json())
+				.then((result) => {
+					console.log("Events", result);
 
-		fetch(
-			`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_start=${
-				now > weekStart ? now : weekStart
-			}&data_end=${formatDateYMD(getEndWeek(view))}&status=private${author}` +
-				filter +
-				"&per_page=500",
-			requestOptions
-		)
-			.then((response) => response.json())
-			.then((result) => {
-				console.log("Events", result);
-
-				setEvents(
-					result.map((event) => {
-						const user = users.find((user) => user.id === event.author);
-						return {
-							title: user ? user.name : "Booking",
-							start: new Date(event.acf.start_date),
-							end: new Date(event.acf.end_date),
-							provider_id: event.acf.provider_id,
-							id: event.id,
-						};
-					})
-				);
-				setLoadingBookings(false);
-			})
-			.catch((error) => {
-				console.log("error", error);
-			});
-	}, [view]);
+					setEvents(
+						result.map((event) => {
+							const user = users.find((user) => user.id === event.author);
+							return {
+								title: user ? user.name : "Booking",
+								start: new Date(event.acf.start_date),
+								end: new Date(event.acf.end_date),
+								provider_id: event.acf.provider_id,
+								id: event.id,
+							};
+						})
+					);
+					setLoadingBookings(false);
+				})
+				.catch((error) => {
+					console.log("error", error);
+				});
+	}, [view, users]);
 
 	useEffect(() => {
 		if (!props.adminId || (props.adminId && props.adminId !== props.id)) {

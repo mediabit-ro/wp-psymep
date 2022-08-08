@@ -311,7 +311,7 @@
 		padding: 55px 45px;
 	}
 	.table {
-		border-radius: 15px;
+		border-radius: 0 0 15px 15px;
 		background-color: #f7f7f7;
 		td {
 			border-left: none;
@@ -345,5 +345,27 @@
 	&,
 	&-head {
 		background-color: white;
+	}
+}
+
+.nav-tabs {
+	background-color: white;
+	.nav-item {
+		width: 50%;
+		text-align: center;
+	}
+	&,
+	.nav-link {
+		margin-bottom: 0;
+		border: none;
+		width: 100%;
+		border-radius: 0;
+		button {
+			color: #495057 !important;
+			padding: 20px;
+		}
+		&.active {
+			background-color: #f7f7f7;
+		}
 	}
 }

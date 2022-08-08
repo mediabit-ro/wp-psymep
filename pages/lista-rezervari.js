@@ -7,18 +7,19 @@ import nextCookie from "next-cookies";
 import Router from "next/router";
 import Layout from "../components/Layout";
 import {
-	formatDateHMS,
-	formatDateYMDHM,
 	formatDateYMD,
-	generateProvidersUrl,
 	formatDateReadable,
 	formatDateDH,
+	filterCanceled,
 } from "../utils";
 import { observer } from "mobx-react-lite";
 import store from "../store/store";
+import Tab from "react-bootstrap/Tab";
+import Tabs from "react-bootstrap/Tabs";
 
 const Rezerevari = observer((props) => {
 	const [bookings, setBookings] = useState([]);
+	const [canceledBookings, setCanceledBookings] = useState([]);
 	const { token, id, adminId, name } = props;
 
 	useEffect(() => {
@@ -64,6 +65,29 @@ const Rezerevari = observer((props) => {
 					}
 				}
 				setBookings(bookingsFinal);
+			})
+			.catch((error) => {
+				console.log("error", error);
+			});
+
+		fetch(
+			`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_end=20240121&data_start=${formatDateYMD(
+				new Date()
+			)}&status=trash&per_page=500`,
+			requestOptions
+		)
+			.then((response) => response.json())
+			.then((result) => {
+				setCanceledBookings(
+					result.filter((booking) =>
+						filterCanceled(
+							booking.acf.start_date,
+							booking.date,
+							booking.modified,
+							booking
+						)
+					)
+				);
 			})
 			.catch((error) => {
 				console.log("error", error);
@@ -205,84 +229,132 @@ const Rezerevari = observer((props) => {
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 			<div className='rez-list'>
-				<h3 className='mb-4'>Rezervari Curente</h3>
-				<table className='table table-bordered'>
-					<thead>
-						{bookings.map((booking, index) => (
-							<>
-								<tr
-									className={
-										booking.dropdownState ? "recurrent-booking-head" : ""
-									}
-									key={Math.random()}>
-									<td>{getProviderName(booking.provider_id)}</td>
-									<td className='text-capitalize'>
-										{booking.recurrent
-											? formatDateDH(booking.start_date)
-											: formatDateReadable(booking.start_date)}
-									</td>
-									<td>
-										<button
-											onClick={() =>
-												booking.recurrent
-													? cancelBookingRecurrentHandler(booking)
-													: cancelBookingHandler(booking.id)
+				<Tabs defaultActiveKey='profile'>
+					<Tab eventKey='home' title='Lista rezervari'>
+						<table className='table table-bordered'>
+							<thead>
+								<td>
+									<strong>Cameră</strong>
+								</td>
+								<td>
+									<strong>Dată</strong>
+								</td>
+								<td>
+									<strong>Anulează</strong>
+								</td>
+							</thead>
+							<tbody>
+								{bookings.map((booking, index) => (
+									<>
+										<tr
+											className={
+												booking.dropdownState ? "recurrent-booking-head" : ""
 											}
-											disabled={booking.loading}
-											className='btn btn-primary px-4 py-2'>
-											Anulează
-											{booking.recurrent ? " recurentă" : " rezervare"}
-											{booking.loading && (
-												<div
-													className='spinner-border spinner-border-sm ms-2 text-light'
-													role='status'></div>
-											)}
-										</button>
-									</td>
-									<td>
-										{booking.recurrent && (
-											<div onClick={() => dropdownHandler(booking)}>
-												{booking.dropdownState ? (
-													<i className='bi bi-chevron-up p-3'></i>
-												) : (
-													<i className='bi bi-chevron-down p-3'></i>
-												)}
-											</div>
-										)}
-									</td>
-								</tr>
-								{booking.dropdownState &&
-									booking.recurrentBookings
-										.sort((cur, prev) => cur.filter_date - prev.filter_date)
-										.map((recurrentBooking) => (
-											<tr key={Math.random()} className='recurrent-booking'>
-												<td>{getProviderName(recurrentBooking.provider_id)}</td>
-												<td className='text-capitalize'>
-													{formatDateReadable(recurrentBooking.start_date)}
-												</td>
-												<td>
-													<button
-														disabled={recurrentBooking.loading}
-														onClick={() =>
-															cancelBookingHandler(recurrentBooking.id, booking)
-														}
-														className='btn btn-primary px-3 py-1 small'>
-														Anulează rezervare
-														{recurrentBooking.loading && (
-															<div
-																className='spinner-border spinner-border-sm ms-2 text-light'
-																role='status'></div>
+											key={Math.random()}>
+											<td>{getProviderName(booking.provider_id)}</td>
+											<td className='text-capitalize'>
+												{booking.recurrent
+													? formatDateDH(booking.start_date)
+													: formatDateReadable(booking.start_date)}
+											</td>
+											<td>
+												<button
+													onClick={() =>
+														booking.recurrent
+															? cancelBookingRecurrentHandler(booking)
+															: cancelBookingHandler(booking.id)
+													}
+													disabled={booking.loading}
+													className='btn btn-primary px-4 py-2'>
+													Anulează
+													{booking.recurrent ? " recurentă" : " rezervare"}
+													{booking.loading && (
+														<div
+															className='spinner-border spinner-border-sm ms-2 text-light'
+															role='status'></div>
+													)}
+												</button>
+											</td>
+											<td>
+												{booking.recurrent && (
+													<div onClick={() => dropdownHandler(booking)}>
+														{booking.dropdownState ? (
+															<i className='bi bi-chevron-up p-3'></i>
+														) : (
+															<i className='bi bi-chevron-down p-3'></i>
 														)}
-													</button>
-												</td>
-												<td></td>
-											</tr>
-										))}
-							</>
-						))}
-					</thead>
-					<tbody></tbody>
-				</table>
+													</div>
+												)}
+											</td>
+										</tr>
+										{booking.dropdownState &&
+											booking.recurrentBookings
+												.sort((cur, prev) => cur.filter_date - prev.filter_date)
+												.map((recurrentBooking) => (
+													<tr key={Math.random()} className='recurrent-booking'>
+														<td>
+															{getProviderName(recurrentBooking.provider_id)}
+														</td>
+														<td className='text-capitalize'>
+															{formatDateReadable(recurrentBooking.start_date)}
+														</td>
+														<td>
+															<button
+																disabled={recurrentBooking.loading}
+																onClick={() =>
+																	cancelBookingHandler(
+																		recurrentBooking.id,
+																		booking
+																	)
+																}
+																className='btn btn-primary px-3 py-1 small'>
+																Anulează rezervare
+																{recurrentBooking.loading && (
+																	<div
+																		className='spinner-border spinner-border-sm ms-2 text-light'
+																		role='status'></div>
+																)}
+															</button>
+														</td>
+														<td></td>
+													</tr>
+												))}
+									</>
+								))}
+							</tbody>
+						</table>
+					</Tab>
+					<Tab eventKey='profile' title='Rezervari anulate'>
+						<table className='table table-bordered'>
+							<thead>
+								<td>
+									<strong>Cameră</strong>
+								</td>
+								<td>
+									<strong>Dată</strong>
+								</td>
+								<td>
+									<strong>Dată anulare</strong>
+								</td>
+							</thead>
+							<tbody>
+								{canceledBookings.map((booking, index) => (
+									<>
+										<tr key={Math.random()}>
+											<td>{getProviderName(booking.acf.provider_id)}</td>
+											<td className='text-capitalize'>
+												{formatDateReadable(booking.acf.start_date)}
+											</td>
+											<td className='text-capitalize'>
+												{formatDateReadable(booking.modified)}
+											</td>
+										</tr>
+									</>
+								))}
+							</tbody>
+						</table>
+					</Tab>
+				</Tabs>
 			</div>
 		</Layout>
 	);

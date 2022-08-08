@@ -349,3 +349,33 @@ export function invertColor(hex, bw) {
 	// pad each with zeros and return
 	return "#" + padZero(r) + padZero(g) + padZero(b);
 }
+
+// Filter if booking was canceled within 24h from appointment and 2h or more from creation
+export const filterCanceled = (
+	bookingDate,
+	createDate,
+	canceledDate,
+	booking
+) => {
+	console.log("booking", booking);
+	console.log("dates", bookingDate, createDate, canceledDate);
+	console.log(
+		"Diff hours",
+		Math.floor(Math.abs(new Date(canceledDate) - new Date(createDate)) / 36e5)
+	);
+	console.log(
+		"Diff days",
+		Math.floor(
+			Math.abs(new Date(bookingDate) - new Date(canceledDate)) / (36e5 * 24)
+		)
+	);
+	if (
+		Math.floor(Math.abs(new Date(canceledDate) - new Date(createDate)) / 36e5) >
+			2 &&
+		Math.floor(
+			Math.abs(new Date(bookingDate) - new Date(canceledDate)) / (36e5 * 24)
+		) < 1
+	)
+		return true;
+	return false;
+};

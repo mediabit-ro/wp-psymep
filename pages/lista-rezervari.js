@@ -67,6 +67,7 @@ const Rezerevari = observer((props) => {
 				setBookings(bookingsFinal);
 			})
 			.catch((error) => {
+				Router.push("/login");
 				console.log("error", error);
 			});
 
@@ -90,6 +91,7 @@ const Rezerevari = observer((props) => {
 				);
 			})
 			.catch((error) => {
+				Router.push("/login");
 				console.log("error", error);
 			});
 
@@ -105,6 +107,7 @@ const Rezerevari = observer((props) => {
 					store.providers = result.filter((item) => item.parent !== 0);
 				})
 				.catch((error) => {
+					Router.push("/login");
 					console.log("error", error);
 				});
 		}
@@ -166,6 +169,7 @@ const Rezerevari = observer((props) => {
 				}
 			})
 			.catch((error) => {
+				Router.push("/login");
 				console.log("error", error);
 			});
 	};
@@ -203,6 +207,7 @@ const Rezerevari = observer((props) => {
 					}
 				})
 				.catch((error) => {
+					Router.push("/login");
 					console.log("error", error);
 				});
 		});

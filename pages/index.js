@@ -97,7 +97,6 @@ Home.getInitialProps = (ctx) => {
 		})
 		.catch((error) => {
 			console.log("error", error);
-			redirectOnError();
 		});
 };
 

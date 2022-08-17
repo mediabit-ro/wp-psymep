@@ -146,10 +146,20 @@ const CalendarPage = observer((props) => {
 		} else {
 			author = "&author=" + props.id;
 		}
+		console.log(
+			"URL",
+			`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_start=${
+				now > weekStart ? now : weekStart
+			}&data_end=${formatDateYMD(getEndWeek(view))}&status=private${author}` +
+				filter +
+				"&per_page=500"
+		);
 		if (users.length)
 			fetch(
 				`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_start=${
-					now > weekStart ? now : weekStart
+					now > weekStart && !(props.adminId && props.adminId === props.id)
+						? now
+						: weekStart
 				}&data_end=${formatDateYMD(getEndWeek(view))}&status=private${author}` +
 					filter +
 					"&per_page=500",
@@ -197,10 +207,12 @@ const CalendarPage = observer((props) => {
 					(provider) => (filter += provider.id + ",")
 				);
 			}
+			const now = formatDateYMD(new Date());
+			const weekStart = formatDateYMD(getStartWeek(view));
 			fetch(
-				`https://mediabit.ro/booking/wp-json/times/ocupied/?data_start=${formatDateYMD(
-					getStartWeek(view)
-				)}&data_end=${formatDateYMD(getEndWeek(view))}${filter}&author=${
+				`https://mediabit.ro/booking/wp-json/times/ocupied/?data_start=${
+					now > weekStart ? now : weekStart
+				}&data_end=${formatDateYMD(getEndWeek(view))}${filter}&author=${
 					props.id
 				}&per_page=500`,
 				requestOptions

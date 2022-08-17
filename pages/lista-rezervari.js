@@ -74,7 +74,7 @@ const Rezerevari = observer((props) => {
 		fetch(
 			`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_end=20240121&data_start=${formatDateYMD(
 				new Date()
-			)}&status=trash&per_page=500`,
+			)}&status=trash&per_page=500&author=${id}`,
 			requestOptions
 		)
 			.then((response) => response.json())
@@ -234,7 +234,7 @@ const Rezerevari = observer((props) => {
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 			<div className='rez-list'>
-				<Tabs defaultActiveKey='profile'>
+				<Tabs defaultActiveKey='home'>
 					<Tab eventKey='home' title='Lista rezervari'>
 						<table className='table table-bordered'>
 							<thead>

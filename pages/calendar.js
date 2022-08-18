@@ -44,8 +44,6 @@ function removeSeconds(string) {
 }
 
 const CalendarPage = observer((props) => {
-	console.log("CalendarProps", props);
-
 	const [view, setView] = useState(new Date());
 	const localizer = momentLocalizer(moment);
 	const [duration, setDuration] = useState(60);
@@ -95,7 +93,6 @@ const CalendarPage = observer((props) => {
 		)
 			.then((response) => response.json())
 			.then((result) => {
-				console.log("users", result);
 				setUsers(result);
 			})
 			.catch((error) => {
@@ -146,14 +143,7 @@ const CalendarPage = observer((props) => {
 		} else {
 			author = "&author=" + props.id;
 		}
-		console.log(
-			"URL",
-			`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_start=${
-				now > weekStart ? now : weekStart
-			}&data_end=${formatDateYMD(getEndWeek(view))}&status=private${author}` +
-				filter +
-				"&per_page=500"
-		);
+
 		if (users.length)
 			fetch(
 				`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_start=${
@@ -167,8 +157,6 @@ const CalendarPage = observer((props) => {
 			)
 				.then((response) => response.json())
 				.then((result) => {
-					console.log("Events", result);
-
 					setEvents(
 						result.map((event) => {
 							const user = users.find((user) => user.id === event.author);
@@ -294,65 +282,121 @@ const CalendarPage = observer((props) => {
 			fetch("https://mediabit.ro/booking/wp-json/wp/v2/posts", requestOptions)
 				.then((response) => response.json())
 				.then((result) => {
-					if (
-						formatDateYMD(new Date(result.acf.start_date)) <=
-						formatDateYMD(getEndWeek(view))
-					) {
-						const user = users.find((user) => user.id === result.author);
-						setEvents([
-							...events,
-							{
-								title: user ? user.name : "Booking",
-								start: new Date(result.acf.start_date),
-								end: new Date(result.acf.end_date),
-								provider_id: result.acf.provider_id,
-							},
-						]);
+					console.log("result", result);
+
+					// Check if error
+
+					if (result.code === "booking_exists") {
+						setError(result.message);
+						setTimeout(() => {
+							setError();
+						}, 5000);
+						setLoading(false);
+					} else {
+						// Add new booking if in view range
+						if (
+							formatDateYMD(new Date(result.acf.start_date)) <=
+							formatDateYMD(getEndWeek(view))
+						) {
+							const user = users.find((user) => user.id === result.author);
+							setEvents([
+								...events,
+								{
+									title: user ? user.name : "Booking",
+									start: new Date(result.acf.start_date),
+									end: new Date(result.acf.end_date),
+									provider_id: result.acf.provider_id,
+								},
+							]);
+						}
+
+						// Reset all
+						setShowRez(false);
+						setLoading(false);
+						setShow(false);
+						setProvider();
+						setDuration(60);
+						setRecurrent(false);
+						setRecurrentEvents(0);
 					}
-
-					setShowRez(false);
-					setLoading(false);
-					setShow(false);
-					setProvider();
-					setDuration(60);
-					setRecurrent(false);
-					setRecurrentEvents(0);
 				})
-				.catch((error) => console.log("error", error));
+				.catch((error) => console.log("error1102", error));
 		};
-
 		if (!provider) {
 			setError("Selecteaza o camera.");
 			setTimeout(() => {
 				setError();
 			}, 4000);
 			setLoading(false);
-		} else if (
-			!checkAvailableTime(modalDataObj, endDate, provider, [
-				...events,
-				...times,
-			])
-		) {
-			setError("Programarea se suprapune cu o alta rezervare.");
-			setTimeout(() => {
-				setError();
-			}, 5000);
-			setLoading(false);
 		} else {
 			if (!recurrent) addBooking(modalDataObj);
 			else {
-				recurrentBooking(
-					props.token,
-					props.id,
-					store.activeProviders,
-					modalDataObj,
-					recurrentEvents,
-					addBooking,
-					duration,
-					provider,
-					setError,
-					setLoading
-				);
+				// recurrentBooking(
+				// 	props.token,
+				// 	props.id,
+				// 	store.activeProviders,
+				// 	modalDataObj,
+				// 	recurrentEvents,
+				// 	addBooking,
+				// 	duration,
+				// 	provider,
+				// 	setError,
+				// 	setLoading
+				// );
+				var myHeaders = new Headers();
+				myHeaders.append("Authorization", `Bearer ${props.token}`);
+
+				var requestOptions = {
+					method: "GET",
+					headers: myHeaders,
+					redirect: "follow",
+				};
+
+				fetch(
+					`https://mediabit.ro/booking/wp-json/multiple/bookings/?data_start=${modalDataObj.toISOString()}&data_end=${endDate.toISOString()}&provider=${provider}&client=${
+						props.id
+					}&repeats=${recurrentEvents}`,
+					requestOptions
+				)
+					.then((response) => response.json())
+					.then((result) => {
+						if (typeof result === "string") {
+							console.log("result", result);
+							result = JSON.parse(result);
+						}
+						// Check if error
+						if (result.code === "booking_exists") {
+							setError(result.message);
+							setTimeout(() => {
+								setError();
+							}, 5000);
+							setLoading(false);
+						} else {
+							// Add new booking if in view range
+							const user = users.find(
+								(user) => user.id === Number(result.meta_input.client_id)
+							);
+							setEvents([
+								...events,
+								{
+									title: user ? user.name : "Booking",
+									start: new Date(result.meta_input.start_date),
+									end: new Date(result.meta_input.end_date),
+									provider_id: Number(result.meta_input.provider_id),
+								},
+							]);
+
+							// Reset all
+							setShowRez(false);
+							setLoading(false);
+							setShow(false);
+							setProvider();
+							setDuration(60);
+							setRecurrent(false);
+							setRecurrentEvents(0);
+						}
+					})
+					.catch((error) => console.log("error1102", error));
 			}
 		}
 	};

@@ -11,6 +11,7 @@ import {
 	formatDateReadable,
 	formatDateDH,
 	filterCanceled,
+	getAllPosts,
 } from "../utils";
 import { observer } from "mobx-react-lite";
 import store from "../store/store";
@@ -33,19 +34,20 @@ const Rezerevari = observer((props) => {
 		};
 
 		// Get posts
-		fetch(
-			`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_end=20240121&data_start=${formatDateYMD(
-				new Date()
-			)}&status=private&author=${id}&per_page=500&orderby=filter_date`,
-			requestOptions
-		)
-			.then((response) => response.json())
-			.then((result) => {
-				let bookingsRaw = result.map((event) => {
+
+		getAllPosts(
+			formatDateYMD(new Date()), // data_start
+			"20240121", // data_end
+			"private", // status
+			500, // per_page
+			token, // token
+			props.id, // author
+			(posts) => {
+				let bookingsRaw = posts.map((event) => {
 					return { ...event.acf, id: event.id };
 				});
 				let bookingsFinal = [];
-				console.log("Bookings", result);
+				console.log("Bookings", posts);
 				while (bookingsRaw.length !== 0) {
 					let booking = bookingsRaw[0];
 					if (booking.recurrent) {
@@ -65,22 +67,35 @@ const Rezerevari = observer((props) => {
 					}
 				}
 				setBookings(bookingsFinal);
-			})
-			.catch((error) => {
-				Router.push("/login");
-				console.log("error", error);
-			});
+			}
+		);
+		// fetch(
+		// 	`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_end=20240121&data_start=${formatDateYMD(
+		// 		new Date()
+		// 	)}&status=private&author=${id}&per_page=500&orderby=filter_date`,
+		// 	requestOptions
+		// )
+		// 	.then((response) => response.json())
+		// 	.then((result) => {
 
-		fetch(
-			`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_end=20240121&data_start=${formatDateYMD(
-				new Date()
-			)}&status=trash&per_page=500&author=${id}`,
-			requestOptions
-		)
-			.then((response) => response.json())
-			.then((result) => {
+		// 	})
+		// 	.catch((error) => {
+		// 		Router.push("/login");
+		// 		console.log("error", error);
+		// 	});
+
+		// Get canceled bookings
+		getAllPosts(
+			formatDateYMD(new Date()), // data_start
+			"20240121", // data_end
+			"trash", // status
+			500, // per_page
+			token, // token
+			props.id, // author
+			(posts) => {
+				console.log("Trash", posts);
 				setCanceledBookings(
-					result.filter((booking) =>
+					posts.filter((booking) =>
 						filterCanceled(
 							booking.acf.start_date,
 							booking.date,
@@ -89,11 +104,8 @@ const Rezerevari = observer((props) => {
 						)
 					)
 				);
-			})
-			.catch((error) => {
-				Router.push("/login");
-				console.log("error", error);
-			});
+			}
+		);
 
 		// Get providers
 		if (!store.providers.length) {

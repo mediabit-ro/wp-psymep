@@ -88,7 +88,7 @@ const CalendarPage = observer((props) => {
 		};
 
 		fetch(
-			"https://mediabit.ro/booking/wp-json/wp/v2/users?per_page=100",
+			"https://mediabit.ro/booking/wp-json/wp/v2/users?per_page=500",
 			requestOptions
 		)
 			.then((response) => response.json())
@@ -143,7 +143,6 @@ const CalendarPage = observer((props) => {
 		} else {
 			author = "&author=" + props.id;
 		}
-
 		if (users.length)
 			fetch(
 				`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_start=${

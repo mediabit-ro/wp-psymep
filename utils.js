@@ -13,12 +13,6 @@ export function formatDateHMS(date) {
 	return [hours, minutes, seconds].join(":");
 }
 
-// function getDayName(dateStr, locale)
-// {
-//     var date = new Date(dateStr);
-//     return ;
-// }
-
 export function formatDateReadable(date) {
 	var d = new Date(date),
 		hours = "" + d.getHours(),
@@ -352,13 +346,42 @@ export function invertColor(hex, bw) {
 
 // Filter if booking was canceled within 24h from appointment and 2h or more from creation
 export const filterCanceled = (bookingDate, createDate, canceledDate) => {
+	createDate = new Date(createDate).addHours(3);
+	canceledDate = new Date(canceledDate).addHours(3);
+
 	if (
-		Math.floor(Math.abs(new Date(canceledDate) - new Date(createDate)) / 36e5) >
-			2 &&
-		Math.floor(
-			Math.abs(new Date(bookingDate) - new Date(canceledDate)) / (36e5 * 24)
-		) < 1
+		Math.abs(new Date(canceledDate) - new Date(createDate)) / 36e5 > 2 &&
+		Math.abs(new Date(bookingDate) - new Date(canceledDate)) / (36e5 * 24) < 1
 	)
 		return true;
 	return false;
 };
+
+// Get all bookings
+export async function getAllPosts(
+	start_date,
+	end_date,
+	status,
+	per_page,
+	token,
+	author,
+	callback
+) {
+	let posts = [];
+	let lastResultsLength = per_page;
+	let page = 1;
+	while (lastResultsLength === per_page) {
+		const newResults = await axios.get(
+			`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_start=${start_date}&data_end=${end_date}&status=${status}&per_page=${per_page}&page=${page}&author=${author}`,
+			{
+				headers: {
+					Authorization: "Bearer " + token,
+				},
+			}
+		);
+		page++;
+		lastResultsLength = newResults.data.length;
+		posts = posts.concat(newResults.data);
+	}
+	callback(posts);
+}

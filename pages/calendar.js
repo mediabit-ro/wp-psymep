@@ -462,7 +462,7 @@ const CalendarPage = observer((props) => {
 
 	const recurentEventsHandler = (e) => {
 		let value = Number(e.target.value);
-		if (value > 20) value = 20;
+		if (value > 40) value = 40;
 		setRecurrentEvents(value);
 	};
 
@@ -485,7 +485,7 @@ const CalendarPage = observer((props) => {
 				<Modal.Header closeButton>
 					<div>
 						<h5 className='w-100'>Adaugă eveniment</h5>
-						<p className='small mb-0'>Selectează ora, durata si locatia</p>
+						<p className='small mb-0'>Selectează ora, durata și locația</p>
 					</div>
 				</Modal.Header>
 				<Modal.Body>

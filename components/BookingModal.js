@@ -53,7 +53,7 @@ export default function BookingModal({
 							<thead>
 								<tr>
 									<th scope='col'>Cabinet</th>
-									<th scope='col'>Data</th>
+									<th scope='col'>Dat</th>
 									<th scope='col'>Oră</th>
 								</tr>
 							</thead>

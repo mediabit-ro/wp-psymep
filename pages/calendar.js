@@ -278,6 +278,25 @@ const CalendarPage = observer((props) => {
 				redirect: "follow",
 			};
 
+			console.log("DATE", {
+				title: props.name,
+				content: "booking",
+				status: "private",
+				author: props.id,
+				categories: [provider],
+				acf: {
+					client_id: 1,
+					provider_id: provider,
+					start_date: modalDataObj,
+					end_date: endDate,
+					location: "1",
+					status: "test",
+					recurrent,
+					filter_date: formatDateYMD(modalData),
+					recurrent_id: recurrentId ? recurrentId : "",
+				},
+			});
+
 			fetch("https://mediabit.ro/booking/wp-json/wp/v2/posts", requestOptions)
 				.then((response) => response.json())
 				.then((result) => {
@@ -301,6 +320,7 @@ const CalendarPage = observer((props) => {
 							setEvents([
 								...events,
 								{
+									id: result.id,
 									title: user ? user.name : "Booking",
 									start: new Date(result.acf.start_date),
 									end: new Date(result.acf.end_date),
@@ -330,18 +350,6 @@ const CalendarPage = observer((props) => {
 		} else {
 			if (!recurrent) addBooking(modalDataObj);
 			else {
-				// recurrentBooking(
-				// 	props.token,
-				// 	props.id,
-				// 	store.activeProviders,
-				// 	modalDataObj,
-				// 	recurrentEvents,
-				// 	addBooking,
-				// 	duration,
-				// 	provider,
-				// 	setError,
-				// 	setLoading
-				// );
 				var myHeaders = new Headers();
 				myHeaders.append("Authorization", `Bearer ${props.token}`);
 
@@ -350,7 +358,6 @@ const CalendarPage = observer((props) => {
 					headers: myHeaders,
 					redirect: "follow",
 				};
-
 				fetch(
 					`https://mediabit.ro/booking/wp-json/multiple/bookings/?data_start=${modalDataObj.toISOString()}&data_end=${endDate.toISOString()}&provider=${provider}&client=${
 						props.id
@@ -375,9 +382,13 @@ const CalendarPage = observer((props) => {
 							const user = users.find(
 								(user) => user.id === Number(result.meta_input.client_id)
 							);
+
+							console.log("result", result);
+
 							setEvents([
 								...events,
 								{
+									id: result.ID,
 									title: user ? user.name : "Booking",
 									start: new Date(result.meta_input.start_date),
 									end: new Date(result.meta_input.end_date),

@@ -17,6 +17,7 @@ import {
 	selectTimes,
 	checkAvailableTime,
 	invertColor,
+	roTimezone,
 } from "../utils";
 import Router from "next/router";
 import "moment/locale/ro";
@@ -44,7 +45,7 @@ function removeSeconds(string) {
 }
 
 const CalendarPage = observer((props) => {
-	const [view, setView] = useState(new Date());
+	const [view, setView] = useState(roTimezone(new Date()));
 	const localizer = momentLocalizer(moment);
 	const [duration, setDuration] = useState(60);
 	const [provider, setProvider] = useState();
@@ -71,7 +72,7 @@ const CalendarPage = observer((props) => {
 	const [users, setUsers] = useState([]);
 
 	const selectEventHandler = (event) => {
-		if (event.start.getTime() > new Date().getTime()) {
+		if (event.start.getTime() > roTimezone(new Date()).getTime()) {
 			setShowRez(true);
 			setDataRez(event);
 		}
@@ -134,7 +135,7 @@ const CalendarPage = observer((props) => {
 			);
 		}
 
-		const now = formatDateYMD(new Date());
+		const now = formatDateYMD(roTimezone(new Date()));
 		const weekStart = formatDateYMD(getStartWeek(view));
 
 		let author;
@@ -161,8 +162,8 @@ const CalendarPage = observer((props) => {
 							const user = users.find((user) => user.id === event.author);
 							return {
 								title: user ? user.name : "Booking",
-								start: new Date(event.acf.start_date),
-								end: new Date(event.acf.end_date),
+								start: roTimezone(new Date(event.acf.start_date)),
+								end: roTimezone(new Date(event.acf.end_date)),
 								provider_id: event.acf.provider_id,
 								id: event.id,
 							};
@@ -194,7 +195,7 @@ const CalendarPage = observer((props) => {
 					(provider) => (filter += provider.id + ",")
 				);
 			}
-			const now = formatDateYMD(new Date());
+			const now = formatDateYMD(roTimezone(new Date()));
 			const weekStart = formatDateYMD(getStartWeek(view));
 			fetch(
 				`https://mediabit.ro/booking/wp-json/times/ocupied/?data_start=${
@@ -210,8 +211,8 @@ const CalendarPage = observer((props) => {
 					setTimes(
 						result.map((time) => ({
 							title: time.title,
-							start: new Date(time.start),
-							end: new Date(time.end),
+							start: roTimezone(new Date(time.start)),
+							end: roTimezone(new Date(time.end)),
 							provider_id: time.provider_id,
 							id: time.id,
 						}))
@@ -227,17 +228,21 @@ const CalendarPage = observer((props) => {
 	const addEventHandler = () => {
 		setLoading(true);
 
-		const modalDataObj = new Date(modalData);
+		const modalDataObj = roTimezone(new Date(modalData));
 
 		modalDataObj.setHours(Number(selectedTime.split(":")[0]));
 		modalDataObj.setMinutes(Number(selectedTime.split(":")[1]));
 
-		const endDate = new Date(modalDataObj.getTime() + duration * 60000);
+		const endDate = roTimezone(
+			new Date(modalDataObj.getTime() + duration * 60000)
+		);
 
 		const addBooking = (modalData, recurrentId) => {
-			const modalDataObj = new Date(modalData);
+			const modalDataObj = roTimezone(modalData);
 
-			const endDate = new Date(modalDataObj.getTime() + duration * 60000);
+			const endDate = roTimezone(
+				new Date(modalDataObj.getTime() + duration * 60000)
+			);
 
 			var myHeaders = new Headers();
 			myHeaders.append("Authorization", `Bearer ${props.token}`);
@@ -251,6 +256,18 @@ const CalendarPage = observer((props) => {
 			var myHeaders = new Headers();
 			myHeaders.append("Authorization", `Bearer ${props.token}`);
 			myHeaders.append("Content-Type", "application/json");
+
+			console.log("Booking", {
+				client_id: 1,
+				provider_id: provider,
+				start_date: roTimezone(modalDataObj),
+				end_date: roTimezone(endDate),
+				location: "1",
+				status: "test",
+				recurrent,
+				filter_date: formatDateYMD(roTimezone(modalData)),
+				recurrent_id: recurrentId ? recurrentId : "",
+			});
 
 			var raw = JSON.stringify({
 				title: props.name,
@@ -266,7 +283,7 @@ const CalendarPage = observer((props) => {
 					location: "1",
 					status: "test",
 					recurrent,
-					filter_date: formatDateYMD(modalData),
+					filter_date: formatDateYMD(roTimezone(modalData)),
 					recurrent_id: recurrentId ? recurrentId : "",
 				},
 			});
@@ -292,7 +309,7 @@ const CalendarPage = observer((props) => {
 					location: "1",
 					status: "test",
 					recurrent,
-					filter_date: formatDateYMD(modalData),
+					filter_date: formatDateYMD(roTimezone(modalData)),
 					recurrent_id: recurrentId ? recurrentId : "",
 				},
 			});
@@ -313,8 +330,8 @@ const CalendarPage = observer((props) => {
 					} else {
 						// Add new booking if in view range
 						if (
-							formatDateYMD(new Date(result.acf.start_date)) <=
-							formatDateYMD(getEndWeek(view))
+							formatDateYMD(roTimezone(new Date(result.acf.start_date))) <=
+							formatDateYMD(getEndWeek(roTimezone(view)))
 						) {
 							const user = users.find((user) => user.id === result.author);
 							setEvents([
@@ -322,8 +339,8 @@ const CalendarPage = observer((props) => {
 								{
 									id: result.id,
 									title: user ? user.name : "Booking",
-									start: new Date(result.acf.start_date),
-									end: new Date(result.acf.end_date),
+									start: roTimezone(new Date(result.acf.start_date)),
+									end: roTimezone(new Date(result.acf.end_date)),
 									provider_id: result.acf.provider_id,
 								},
 							]);
@@ -358,6 +375,12 @@ const CalendarPage = observer((props) => {
 					headers: myHeaders,
 					redirect: "follow",
 				};
+				console.log(
+					"URL",
+					`https://mediabit.ro/booking/wp-json/multiple/bookings/?data_start=${modalDataObj.toISOString()}&data_end=${endDate.toISOString()}&provider=${provider}&client=${
+						props.id
+					}&repeats=${recurrentEvents}`
+				);
 				fetch(
 					`https://mediabit.ro/booking/wp-json/multiple/bookings/?data_start=${modalDataObj.toISOString()}&data_end=${endDate.toISOString()}&provider=${provider}&client=${
 						props.id
@@ -390,8 +413,8 @@ const CalendarPage = observer((props) => {
 								{
 									id: result.ID,
 									title: user ? user.name : "Booking",
-									start: new Date(result.meta_input.start_date),
-									end: new Date(result.meta_input.end_date),
+									start: roTimezone(new Date(result.meta_input.start_date)),
+									end: roTimezone(new Date(result.meta_input.end_date)),
 									provider_id: Number(result.meta_input.provider_id),
 								},
 							]);
@@ -438,7 +461,7 @@ const CalendarPage = observer((props) => {
 
 	const dayPropGetterHandler = (date) => {
 		const today = Date.now();
-		const inherit = new Date(date);
+		const inherit = roTimezone(new Date(date));
 		if (inherit < today) {
 			return {
 				className: "date-in-function",
@@ -452,9 +475,10 @@ const CalendarPage = observer((props) => {
 
 	const slotSelectHandler = (data) => {
 		if (
-			new Date(data.start).getHours() < 23 &&
-			new Date(data.start).getTime() > Date.now() &&
-			new Date(2022, 7, 1, 0, 0, 0).getTime() < new Date(data.start).getTime()
+			roTimezone(new Date(data.start)).getHours() < 23 &&
+			roTimezone(new Date(data.start)).getTime() > Date.now() &&
+			roTimezone(new Date(2022, 7, 1, 0, 0, 0)).getTime() <
+				new Date(data.start).getTime()
 		) {
 			handleShow();
 			setModalData(data.start);
@@ -502,7 +526,7 @@ const CalendarPage = observer((props) => {
 				<Modal.Body>
 					<div className='text-capitalize d-flex align-items-center mb-2'>
 						<i className='h4 bi bi-clock mb-0 me-3'></i>
-						{new Date(modalData).toLocaleDateString("RO-ro", {
+						{roTimezone(new Date(modalData)).toLocaleDateString("RO-ro", {
 							weekday: "long",
 							month: "long",
 							day: "numeric",

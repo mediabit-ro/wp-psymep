@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Offcanvas } from "react-bootstrap";
 import Link from "next/link";
 import Image from "next/image";
@@ -49,30 +49,44 @@ const Layout = observer(({ children, adminId, name }) => {
 						</Link>
 					</div>
 
-					<div style={{ margin: "-15px 0 0 10px" }}>
-						{store.providers.map((provider) => (
-							<div key={Math.random()} className='form-check'>
-								<input
-									className='form-check-input'
-									type='checkbox'
-									value=''
-									style={{
-										backgroundColor: provider.acf.culoare,
-										borderColor: provider.acf.culoare,
-									}}
-									onChange={() => store.toggleProvider(provider)}
-									checked={store.activeProviders.find(
-										(activeProvider) => activeProvider.id === provider.id
-									)}
-									id={"sbap" + provider.id}
-								/>
-								<label
-									htmlFor={"sbap" + provider.id}
-									className='form-check-label'>
-									{provider.name}
-								</label>
-							</div>
-						))}
+					<div style={{ margin: "-15px 0 0 15px" }}>
+						{store.locations
+							.filter((location) =>
+								store.providers.find(
+									(provider) => provider.parent === location.id
+								)
+							)
+							.map((location) => (
+								<div className='mb-2'>
+									<div>{location.name}</div>
+									{store.providers
+										.filter((provider) => provider.parent === location.id)
+										.map((provider) => (
+											<div key={Math.random()} className='form-check'>
+												<input
+													className='form-check-input'
+													type='checkbox'
+													value=''
+													style={{
+														backgroundColor: provider.acf.culoare,
+														borderColor: provider.acf.culoare,
+													}}
+													onChange={() => store.toggleProvider(provider)}
+													checked={store.activeProviders.find(
+														(activeProvider) =>
+															activeProvider.id === provider.id
+													)}
+													id={"sbap" + provider.id}
+												/>
+												<label
+													htmlFor={"sbap" + provider.id}
+													className='form-check-label'>
+													{provider.name}
+												</label>
+											</div>
+										))}
+								</div>
+							))}
 					</div>
 
 					<div className='navbar-item'>
@@ -145,30 +159,44 @@ const Layout = observer(({ children, adminId, name }) => {
 						</Link>
 					</div>
 
-					<div style={{ margin: "-15px 0 0 10px" }}>
-						{store.providers.map((provider) => (
-							<div key={Math.random()} className='form-check'>
-								<input
-									className='form-check-input'
-									type='checkbox'
-									value=''
-									style={{
-										backgroundColor: provider.acf.culoare,
-										borderColor: provider.acf.culoare,
-									}}
-									onChange={() => store.toggleProvider(provider)}
-									checked={store.activeProviders.find(
-										(activeProvider) => activeProvider.id == provider.id
-									)}
-									id={"sbapd" + provider.id}
-								/>
-								<label
-									htmlFor={"sbapd" + provider.id}
-									className='form-check-label'>
-									{provider.name}
-								</label>
-							</div>
-						))}
+					<div style={{ margin: "-15px 0 0 15px" }}>
+						{store.locations
+							.filter((location) =>
+								store.providers.find(
+									(provider) => provider.parent === location.id
+								)
+							)
+							.map((location) => (
+								<div className='mb-2'>
+									<div>{location.name}</div>
+									{store.providers
+										.filter((provider) => provider.parent === location.id)
+										.map((provider) => (
+											<div key={Math.random()} className='form-check'>
+												<input
+													className='form-check-input'
+													type='checkbox'
+													value=''
+													style={{
+														backgroundColor: provider.acf.culoare,
+														borderColor: provider.acf.culoare,
+													}}
+													onChange={() => store.toggleProvider(provider)}
+													checked={store.activeProviders.find(
+														(activeProvider) =>
+															activeProvider.id === provider.id
+													)}
+													id={"sbapd" + provider.id}
+												/>
+												<label
+													htmlFor={"sbapd" + provider.id}
+													className='form-check-label'>
+													{provider.name}
+												</label>
+											</div>
+										))}
+								</div>
+							))}
 					</div>
 
 					<div className='navbar-item'>

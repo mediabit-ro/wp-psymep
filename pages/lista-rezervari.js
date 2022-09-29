@@ -12,16 +12,25 @@ import {
 	formatDateDH,
 	filterCanceled,
 	getAllPosts,
+	roTimezone,
 } from "../utils";
 import { observer } from "mobx-react-lite";
 import store from "../store/store";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 
+Date.prototype.addDays = function (days) {
+	var date = roTimezone(new Date(this.valueOf()));
+	date.setDate(date.getDate() + days);
+	return date;
+};
+
 const Rezerevari = observer((props) => {
 	const [bookings, setBookings] = useState([]);
 	const [canceledBookings, setCanceledBookings] = useState([]);
 	const { token, id, adminId, name } = props;
+	const [oldBookings, setOldBookings] = useState([]);
+	const [oldCanceledBookings, setOldCanceledBookings] = useState([]);
 
 	useEffect(() => {
 		// Headers
@@ -34,20 +43,24 @@ const Rezerevari = observer((props) => {
 		};
 
 		// Get posts
-
 		getAllPosts(
-			formatDateYMD(new Date()), // data_start
+			formatDateYMD(roTimezone(new Date())), // data_start
 			"20240121", // data_end
 			"private", // status
 			500, // per_page
 			token, // token
 			props.id, // author
 			(posts) => {
+				posts.sort((first, second) =>
+					roTimezone(new Date(first.acf.start_date)) >
+					roTimezone(new Date(second.acf.start_date))
+						? 1
+						: -1
+				);
 				let bookingsRaw = posts.map((event) => {
 					return { ...event.acf, id: event.id };
 				});
 				let bookingsFinal = [];
-				console.log("Bookings", posts);
 				while (bookingsRaw.length !== 0) {
 					let booking = bookingsRaw[0];
 					if (booking.recurrent) {
@@ -69,24 +82,10 @@ const Rezerevari = observer((props) => {
 				setBookings(bookingsFinal);
 			}
 		);
-		// fetch(
-		// 	`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_end=20240121&data_start=${formatDateYMD(
-		// 		new Date()
-		// 	)}&status=private&author=${id}&per_page=500&orderby=filter_date`,
-		// 	requestOptions
-		// )
-		// 	.then((response) => response.json())
-		// 	.then((result) => {
-
-		// 	})
-		// 	.catch((error) => {
-		// 		Router.push("/login");
-		// 		console.log("error", error);
-		// 	});
 
 		// Get canceled bookings
 		getAllPosts(
-			formatDateYMD(new Date()), // data_start
+			formatDateYMD(roTimezone(new Date())), // data_start
 			"20240121", // data_end
 			"trash", // status
 			500, // per_page
@@ -95,6 +94,69 @@ const Rezerevari = observer((props) => {
 			(posts) => {
 				console.log("Trash", posts);
 				setCanceledBookings(
+					posts.filter((booking) =>
+						filterCanceled(
+							booking.acf.start_date,
+							booking.date,
+							booking.modified,
+							booking
+						)
+					)
+				);
+			}
+		);
+
+		// Get old bookings
+		getAllPosts(
+			formatDateYMD(roTimezone(new Date()).addDays(-31)), // data_start
+			formatDateYMD(roTimezone(new Date()).addDays(-1)), // data_end
+			"private", // status
+			500, // per_page
+			token, // token
+			props.id, // author
+			(posts) => {
+				posts.sort((first, second) =>
+					roTimezone(new Date(first.acf.start_date)) >
+					roTimezone(new Date(second.acf.start_date))
+						? 1
+						: -1
+				);
+				let bookingsRaw = posts.map((event) => {
+					return { ...event.acf, id: event.id };
+				});
+				let bookingsFinal = [];
+				while (bookingsRaw.length !== 0) {
+					let booking = bookingsRaw[0];
+					if (booking.recurrent) {
+						let recurrentBooking = {
+							...booking,
+							recurrentBookings: bookingsRaw.filter(
+								(item) => item.recurrent_id == booking.recurrent_id
+							),
+						};
+						bookingsFinal.push(recurrentBooking);
+						bookingsRaw = bookingsRaw.filter(
+							(item) => item.recurrent_id !== booking.recurrent_id
+						);
+					} else {
+						bookingsFinal.push(booking);
+						bookingsRaw.shift();
+					}
+				}
+				setOldBookings(bookingsFinal);
+			}
+		);
+
+		getAllPosts(
+			formatDateYMD(roTimezone(new Date()).addDays(-31)), // data_start
+			formatDateYMD(roTimezone(new Date()).addDays(-1)), // data_end
+			"trash", // status
+			500, // per_page
+			token, // token
+			props.id, // author
+			(posts) => {
+				console.log("Trash", posts);
+				setOldCanceledBookings(
 					posts.filter((booking) =>
 						filterCanceled(
 							booking.acf.start_date,
@@ -117,6 +179,7 @@ const Rezerevari = observer((props) => {
 				.then((result) => {
 					console.log("res", result);
 					store.providers = result.filter((item) => item.parent !== 0);
+					store.locations = result.filter((item) => item.parent == 0);
 				})
 				.catch((error) => {
 					Router.push("/login");
@@ -238,6 +301,8 @@ const Rezerevari = observer((props) => {
 		setBookings([...bookings]);
 	};
 
+	console.log("Old bookings", oldBookings);
+
 	return (
 		<Layout adminId={adminId} name={name}>
 			<Head>
@@ -271,8 +336,8 @@ const Rezerevari = observer((props) => {
 											<td>{getProviderName(booking.provider_id)}</td>
 											<td className='text-capitalize'>
 												{booking.recurrent
-													? formatDateDH(booking.start_date)
-													: formatDateReadable(booking.start_date)}
+													? formatDateDH(roTimezone(booking.start_date))
+													: formatDateReadable(roTimezone(booking.start_date))}
 											</td>
 											<td>
 												<button
@@ -313,7 +378,9 @@ const Rezerevari = observer((props) => {
 															{getProviderName(recurrentBooking.provider_id)}
 														</td>
 														<td className='text-capitalize'>
-															{formatDateReadable(recurrentBooking.start_date)}
+															{formatDateReadable(
+																roTimezone(recurrentBooking.start_date)
+															)}
 														</td>
 														<td>
 															<button
@@ -360,7 +427,48 @@ const Rezerevari = observer((props) => {
 										<tr key={Math.random()}>
 											<td>{getProviderName(booking.acf.provider_id)}</td>
 											<td className='text-capitalize'>
-												{formatDateReadable(booking.acf.start_date)}
+												{formatDateReadable(roTimezone(booking.acf.start_date))}
+											</td>
+											<td className='text-capitalize'>
+												{formatDateReadable(booking.modified)}
+											</td>
+										</tr>
+									</>
+								))}
+							</tbody>
+						</table>
+					</Tab>
+					<Tab eventKey='old' title='Ultimele 30 de zile'>
+						<table className='table table-bordered'>
+							<thead>
+								<td>
+									<strong>Cameră</strong>
+								</td>
+								<td>
+									<strong>Dată</strong>
+								</td>
+								<td>
+									<strong>Dată anulare</strong>
+								</td>
+							</thead>
+							<tbody>
+								{oldBookings.map((booking, index) => (
+									<>
+										<tr key={Math.random()}>
+											<td>{getProviderName(booking.provider_id)}</td>
+											<td className='text-capitalize'>
+												{formatDateReadable(roTimezone(booking.start_date))}
+											</td>
+											<td className='text-capitalize'></td>
+										</tr>
+									</>
+								))}
+								{oldCanceledBookings.map((booking, index) => (
+									<>
+										<tr key={Math.random()}>
+											<td>{getProviderName(booking.acf.provider_id)}</td>
+											<td className='text-capitalize'>
+												{formatDateReadable(roTimezone(booking.acf.start_date))}
 											</td>
 											<td className='text-capitalize'>
 												{formatDateReadable(booking.modified)}

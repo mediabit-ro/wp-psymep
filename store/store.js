@@ -27,7 +27,6 @@ class Store {
 			);
 		else this.activeProviders.push(provider);
 		this.refreshTimes = !this.refreshTimes;
-		console.log("activeProviders", toJS(this.activeProviders));
 	}
 }
 

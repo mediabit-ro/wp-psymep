@@ -382,6 +382,31 @@ export async function getAllPosts(
 		page++;
 		lastResultsLength = newResults.data.length;
 		posts = posts.concat(newResults.data);
+		console.log(
+			"newResults",
+			newResults.data.map((item) => item.acf)
+		);
 	}
 	callback(posts);
 }
+
+export const roTimezone = (date) => {
+	function changeTimeZone(date, timeZone) {
+		if (typeof date === "string") {
+			return new Date(
+				new Date(date).toLocaleString("en-US", {
+					timeZone,
+				})
+			);
+		}
+
+		return new Date(
+			date.toLocaleString("en-US", {
+				timeZone,
+			})
+		);
+	}
+
+	// return changeTimeZone(date, "Europe/Bucharest");
+	return new Date(date);
+};

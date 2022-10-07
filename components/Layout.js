@@ -57,7 +57,7 @@ const Layout = observer(({ children, adminId, name }) => {
 								)
 							)
 							.map((location) => (
-								<div className='mb-2'>
+								<div key={Math.random()} className='mb-2'>
 									<div>{location.name}</div>
 									{store.providers
 										.filter((provider) => provider.parent === location.id)
@@ -167,7 +167,7 @@ const Layout = observer(({ children, adminId, name }) => {
 								)
 							)
 							.map((location) => (
-								<div className='mb-2'>
+								<div key={Math.random()} className='mb-2'>
 									<div>{location.name}</div>
 									{store.providers
 										.filter((provider) => provider.parent === location.id)

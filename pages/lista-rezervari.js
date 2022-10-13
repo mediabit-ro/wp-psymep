@@ -84,31 +84,31 @@ const Rezerevari = observer((props) => {
 		);
 
 		// Get canceled bookings
-		getAllPosts(
-			formatDateYMD(roTimezone(new Date())), // data_start
-			"20240121", // data_end
-			"trash", // status
-			500, // per_page
-			token, // token
-			props.id, // author
-			(posts) => {
-				console.log("Trash", posts);
-				setCanceledBookings(
-					posts.filter((booking) =>
-						filterCanceled(
-							booking.acf.start_date,
-							booking.date,
-							booking.modified,
-							booking
-						)
-					)
-				);
-			}
-		);
+		// getAllPosts(
+		// 	formatDateYMD(roTimezone(new Date()).addDays(-60)), // data_start
+		// 	formatDateYMD(new Date()), // data_end
+		// 	"trash", // status
+		// 	500, // per_page
+		// 	token, // token
+		// 	props.id, // author
+		// 	(posts) => {
+		// 		console.log("Trash", posts);
+		// 		setCanceledBookings(
+		// 			posts.filter((booking) =>
+		// 				filterCanceled(
+		// 					booking.acf.start_date,
+		// 					booking.date,
+		// 					booking.modified,
+		// 					booking
+		// 				)
+		// 			)
+		// 		);
+		// 	}
+		// );
 
 		// Get old bookings
 		getAllPosts(
-			formatDateYMD(roTimezone(new Date()).addDays(-31)), // data_start
+			formatDateYMD(roTimezone(new Date()).addDays(-60)), // data_start
 			formatDateYMD(roTimezone(new Date()).addDays(-1)), // data_end
 			"private", // status
 			500, // per_page
@@ -149,7 +149,7 @@ const Rezerevari = observer((props) => {
 
 		getAllPosts(
 			formatDateYMD(roTimezone(new Date()).addDays(-31)), // data_start
-			formatDateYMD(roTimezone(new Date()).addDays(-1)), // data_end
+			formatDateYMD(roTimezone(new Date())), // data_end
 			"trash", // status
 			500, // per_page
 			token, // token
@@ -408,7 +408,7 @@ const Rezerevari = observer((props) => {
 							</tbody>
 						</table>
 					</Tab>
-					<Tab eventKey='profile' title='Rezervari anulate'>
+					{/* <Tab eventKey='profile' title='Rezervari anulate'>
 						<table className='table table-bordered'>
 							<thead>
 								<td>
@@ -437,8 +437,8 @@ const Rezerevari = observer((props) => {
 								))}
 							</tbody>
 						</table>
-					</Tab>
-					<Tab eventKey='old' title='Ultimele 30 de zile'>
+					</Tab> */}
+					<Tab eventKey='old' title='Ultimele 60 de zile'>
 						<table className='table table-bordered'>
 							<thead>
 								<td>

@@ -161,7 +161,7 @@ const CalendarPage = observer((props) => {
 						result.map((event) => {
 							const user = users.find((user) => user.id === event.author);
 							return {
-								title: user ? user.name : "Booking",
+								title: user ? user.name : props.name,
 								start: roTimezone(new Date(event.acf.start_date)),
 								end: roTimezone(new Date(event.acf.end_date)),
 								provider_id: event.acf.provider_id,
@@ -338,7 +338,7 @@ const CalendarPage = observer((props) => {
 								...events,
 								{
 									id: result.id,
-									title: user ? user.name : "Booking",
+									title: user ? user.name : props.name,
 									start: roTimezone(new Date(result.acf.start_date)),
 									end: roTimezone(new Date(result.acf.end_date)),
 									provider_id: result.acf.provider_id,
@@ -412,7 +412,7 @@ const CalendarPage = observer((props) => {
 								...events,
 								{
 									id: result.ID,
-									title: user ? user.name : "Booking",
+									title: user ? user.name : props.name,
 									start: roTimezone(new Date(result.meta_input.start_date)),
 									end: roTimezone(new Date(result.meta_input.end_date)),
 									provider_id: Number(result.meta_input.provider_id),
@@ -473,12 +473,28 @@ const CalendarPage = observer((props) => {
 		e.target.checked ? setDuration(90) : setDuration(60);
 	};
 
+	function getNumberOfDays(start, end) {
+		const date1 = new Date(start);
+		const date2 = new Date(end);
+
+		// One day in milliseconds
+		const oneDay = 1000 * 60 * 60 * 24;
+
+		// Calculating the time difference between two dates
+		const diffInTime = date1.getTime() - date2.getTime();
+
+		// Calculating the no. of days between two dates
+		const diffInDays = Math.round(diffInTime / oneDay);
+		return diffInDays;
+	}
+
 	const slotSelectHandler = (data) => {
 		if (
 			roTimezone(new Date(data.start)).getHours() < 23 &&
 			roTimezone(new Date(data.start)).getTime() > Date.now() &&
 			roTimezone(new Date(2022, 7, 1, 0, 0, 0)).getTime() <
-				new Date(data.start).getTime()
+				new Date(data.start).getTime() &&
+			getNumberOfDays(data.start, new Date()) < 30
 		) {
 			handleShow();
 			setModalData(data.start);

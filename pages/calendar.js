@@ -175,7 +175,7 @@ const CalendarPage = observer((props) => {
 					console.log("error", error);
 					Router.push("/login");
 				});
-	}, [view, users]);
+	}, [view, users, store.refreshTimes]);
 
 	useEffect(() => {
 		if (!props.adminId || (props.adminId && props.adminId !== props.id)) {

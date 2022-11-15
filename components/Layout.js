@@ -46,7 +46,9 @@ const Layout = observer(({ children, adminId, name }) => {
 							(store.activeProviders.length !== 0 ? "animate-button" : "")
 						}>
 						<Link href='/calendar'>
-							<a className={currentRoute === "/calendar" ? "active" : ""}>
+							<a
+								onClick={handleClose}
+								className={currentRoute === "/calendar" ? "active" : ""}>
 								<i className='bi bi-calendar-event'></i>
 								Calendar
 							</a>
@@ -226,10 +228,12 @@ const Layout = observer(({ children, adminId, name }) => {
 						</Link>
 					</div>
 					<div className='navbar-item'>
-						<a rel='noreferrer' target='_blank' href='tel:0766472857'>
-							<i className='bi bi-person-lines-fill'></i>
-							Contact
-						</a>
+						<Link href='/contact'>
+							<a className={currentRoute === "/contact" ? "active" : ""}>
+								<i className='bi bi-list-ul'></i>
+								Contact
+							</a>
+						</Link>
 					</div>
 					{adminId && (
 						<div className='navbar-item'>

@@ -25,14 +25,13 @@ const Home = observer((props) => {
 		categories.pop();
 		setName(categories.pop());
 		categories.pop();
-		console.log("Categories", categories);
 
 		store.locations = categories.filter((item) => item.parent === 0);
 
 		store.providers = categories.filter((item) => item.parent !== 0);
 	}, []);
 
-	console.log("providers", toJS(store.providers));
+	console.log("providers", toJS(store.locations));
 
 	return (
 		<Layout adminId={adminId} name={name}>
@@ -52,7 +51,7 @@ const Home = observer((props) => {
 							style={{ maxWidth: "600px" }}
 							className='col-lg-6 mb-3'>
 							<div className='p-lg-4 p-3 rounded bg-white'>
-								<h5>{location.name}</h5>
+								<h5>{location.description}</h5>
 								<div className='row'>
 									{store.providers
 										.filter((provider) => provider.parent === location.id)

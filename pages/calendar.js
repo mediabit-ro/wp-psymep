@@ -225,6 +225,17 @@ const CalendarPage = observer((props) => {
 		}
 	}, [view, store.refreshTimes]);
 
+	// useEffect(() => {
+	// 	let days = document.querySelectorAll(".rbc-header");
+	// 	const start = getStartWeek(view);
+	// 	const now = new Date();
+	// 	const diffTime = Math.abs(now - start);
+	// 	const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+	// 	console.log(diffTime + " milliseconds");
+	// 	console.log(diffDays + " days");
+	// 	days[diffDays].scrollIntoView();
+	// });
+
 	const addEventHandler = () => {
 		setLoading(true);
 

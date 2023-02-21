@@ -35,11 +35,11 @@ const TermeniSiConditii = () => {
 
 		console.log(
 			"URL",
-			`https://mediabit.ro/booking-staging/wp-json/v1/update-terms?user_id=${user.id}&post_id=${store.terms.postId}`
+			`http://mediabit.ro/booking-staging/wp-json/v1/update-terms?user_id=${user.id}&post_id=${store.terms.postId}`
 		);
 
 		fetch(
-			`https://mediabit.ro/booking-staging/wp-json/v1/update-terms?user_id=${user.id}&post_id=${store.terms.postId}`,
+			`http://mediabit.ro/booking-staging/wp-json/v1/update-terms?user_id=${user.id}&post_id=${store.terms.postId}`,
 			requestOptions
 		)
 			.then((res) => login({ token: user.token, id: user.id, name: user.name }))

@@ -28,7 +28,7 @@ const Rapoarte = (props) => {
 		};
 
 		fetch(
-			`https://mediabit.ro/booking-staging/wp-json/v1/get-reports-single?month=${month}&year=${year}&user=${id}`,
+			`http://mediabit.ro/booking-staging/wp-json/v1/get-reports-single?month=${month}&year=${year}&user=${id}`,
 			requestOptions
 		)
 			.then((response) => response.json())

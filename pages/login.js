@@ -16,7 +16,7 @@ export default function Login() {
 		event.preventDefault();
 		setUserData(Object.assign({}, userData, { error: "" }));
 
-		const url = "http://psymep.test/wp-json/jwt-auth/v1/token";
+		const url = "https://mediabit.ro/booking-staging/wp-json/jwt-auth/v1/token";
 
 		var formdata = new FormData();
 		formdata.append("username", userData.username);
@@ -27,7 +27,10 @@ export default function Login() {
 			body: formdata,
 			redirect: "follow",
 		};
-		fetch("http://psymep.test/wp-json/jwt-auth/v1/token", requestOptions)
+		fetch(
+			"https://mediabit.ro/booking-staging/wp-json/jwt-auth/v1/token",
+			requestOptions
+		)
 			.then((response) => response.json())
 			.then((response) => {
 				console.log("response token", response);
@@ -43,7 +46,10 @@ export default function Login() {
 						redirect: "follow",
 					};
 
-					fetch("http://psymep.test/wp-json/wp/v2/users/me", requestOptions)
+					fetch(
+						"https://mediabit.ro/booking-staging/wp-json/wp/v2/users/me",
+						requestOptions
+					)
 						.then((response) => response.json())
 						.then((response) => {
 							// User data
@@ -51,7 +57,7 @@ export default function Login() {
 
 							// Get last custom post type "termeni"
 							fetch(
-								"http://psymep.test/wp-json/wp/v2/termeni?per_page=1",
+								"https://mediabit.ro/booking-staging/wp-json/wp/v2/termeni?per_page=1",
 								requestOptions
 							)
 								.then((response) => response.json())

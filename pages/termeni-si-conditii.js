@@ -35,11 +35,11 @@ const TermeniSiConditii = () => {
 
 		console.log(
 			"URL",
-			`http://psymep.test/wp-json/v1/update-terms?user_id=${user.id}&post_id=${store.terms.postId}`
+			`https://mediabit.ro/booking-staging/wp-json/v1/update-terms?user_id=${user.id}&post_id=${store.terms.postId}`
 		);
 
 		fetch(
-			`http://psymep.test/wp-json/v1/update-terms?user_id=${user.id}&post_id=${store.terms.postId}`,
+			`https://mediabit.ro/booking-staging/wp-json/v1/update-terms?user_id=${user.id}&post_id=${store.terms.postId}`,
 			requestOptions
 		)
 			.then((res) => login({ token: user.token, id: user.id, name: user.name }))

@@ -119,6 +119,14 @@ const Layout = observer(({ children, adminId, name }) => {
 							Contact
 						</a>
 					</div>
+					<div className='navbar-item'>
+						<Link href='/rapoarte'>
+							<a className={currentRoute === "/rapoarte" ? "active" : ""}>
+								<i className='bi bi-archive'></i>
+								Rapoarte
+							</a>
+						</Link>
+					</div>
 					{adminId && (
 						<div className='navbar-item'>
 							<Link href='/accounts'>
@@ -232,6 +240,14 @@ const Layout = observer(({ children, adminId, name }) => {
 							<a className={currentRoute === "/contact" ? "active" : ""}>
 								<i className='bi bi-list-ul'></i>
 								Contact
+							</a>
+						</Link>
+					</div>
+					<div className='navbar-item'>
+						<Link href='/rapoarte'>
+							<a className={currentRoute === "/rapoarte" ? "active" : ""}>
+								<i className='bi bi-archive'></i>
+								Rapoarte
 							</a>
 						</Link>
 					</div>

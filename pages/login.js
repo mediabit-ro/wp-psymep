@@ -1,9 +1,9 @@
 import Head from "next/head";
-import Router from "next/router";
 import fetch from "isomorphic-unfetch";
 import React, { useState } from "react";
 import { login } from "../utils/auth";
 import Link from "next/link";
+import Router from "next/router";
 import store from "../store/store";
 
 export default function Login() {
@@ -16,7 +16,7 @@ export default function Login() {
 		event.preventDefault();
 		setUserData(Object.assign({}, userData, { error: "" }));
 
-		const url = "https://mediabit.ro/booking/wp-json/jwt-auth/v1/token";
+		const url = "http://psymep.test/wp-json/jwt-auth/v1/token";
 
 		var formdata = new FormData();
 		formdata.append("username", userData.username);
@@ -27,11 +27,7 @@ export default function Login() {
 			body: formdata,
 			redirect: "follow",
 		};
-
-		fetch(
-			"https://mediabit.ro/booking/wp-json/jwt-auth/v1/token",
-			requestOptions
-		)
+		fetch("http://psymep.test/wp-json/jwt-auth/v1/token", requestOptions)
 			.then((response) => response.json())
 			.then((response) => {
 				console.log("response token", response);
@@ -47,14 +43,47 @@ export default function Login() {
 						redirect: "follow",
 					};
 
-					fetch(
-						"https://mediabit.ro/booking/wp-json/wp/v2/users/me",
-						requestOptions
-					)
+					fetch("http://psymep.test/wp-json/wp/v2/users/me", requestOptions)
 						.then((response) => response.json())
 						.then((response) => {
+							// User data
 							const { id, name } = response;
-							login({ token, id, name });
+
+							// Get last custom post type "termeni"
+							fetch(
+								"http://psymep.test/wp-json/wp/v2/termeni?per_page=1",
+								requestOptions
+							)
+								.then((response) => response.json())
+								.then((response) => {
+									console.log("response termeni", response);
+									let users = [];
+									if (response[0].acf.users)
+										users = response[0].acf.users.map((item) => item.user);
+									// Get acf field users
+									console.log("Users", users, id);
+
+									if (users && users.includes(id)) {
+										// If user is in the list
+										console.log("User in terms list. Proceed to login");
+										login({ token, id, name });
+									} else {
+										// If user is not in the list
+										store.terms.content = response[0].content.rendered;
+										store.terms.user = { token, id, name };
+										store.terms.postId = response[0].id;
+										store.terms.users = users;
+										Router.push("/termeni-si-conditii");
+									}
+								})
+								.catch((error) => {
+									console.error(
+										"You have an error in your code or there are Network issues.",
+										error
+									);
+								});
+
+							// login({ token, id, name });
 						})
 						.catch((error) => {
 							console.error(

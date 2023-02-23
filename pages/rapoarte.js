@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import Head from "next/head";
 import { withAuthSync } from "../utils/auth";
@@ -7,13 +7,48 @@ import nextCookie from "next-cookies";
 import Router from "next/router";
 import Layout from "../components/Layout";
 import { set } from "mobx";
+import jsPDF from "jspdf";
+import Image from "next/image";
+
+function formatDateEmail(date) {
+	var d = new Date(date),
+		month = "" + (d.getMonth() + 1),
+		day = "" + d.getDate(),
+		year = d.getFullYear(),
+		minutes = d.getMinutes(),
+		hours = d.getHours();
+
+	if (month.length < 2) month = "0" + month;
+	if (day.length < 2) day = "0" + day;
+	if (minutes < 10) minutes = "0" + minutes;
+	if (hours < 10) hours = "0" + hours;
+
+	return [day, month, year].join(".") + " " + [hours, minutes].join(":");
+}
 
 const Rapoarte = (props) => {
 	const { token, id, adminId, name } = props;
 
+	const reportTemplateRef = useRef(null);
+
 	const [month, setMonth] = useState("01");
 	const [year, setYear] = useState("2022");
 	const [loading, setLoading] = useState(false);
+	const [bookings, setBookings] = useState([]);
+
+	const downloadHandler = () => {
+		var doc = new jsPDF({
+			unit: "px",
+			// autoPaging: false,
+			onePage: true,
+			format: [500, reportTemplateRef.current.offsetHeight + 150],
+		});
+		doc.html(reportTemplateRef.current, {
+			async callback(doc) {
+				await doc.save(`raport-${name}-${month}-${year}`);
+			},
+		});
+	};
 
 	const submitHandler = () => {
 		setLoading(true);
@@ -121,7 +156,7 @@ const Rapoarte = (props) => {
 
 				// Convert data to CSV
 				if (result[0]) {
-					let bookings = result[0].post.programari;
+					bookings = result[0].post.programari;
 
 					console.log("Bookings", bookings);
 
@@ -257,32 +292,16 @@ const Rapoarte = (props) => {
 						Cost: reduced,
 					});
 
+					packages.push({
+						Nume: `Numar total de ore`,
+						Cabinet: "",
+						Data: "",
+						"Data anulare": "",
+						Cost: (Number(data.post.tip1) + Number(data.post.tip2)) / 60,
+					});
+
 					bookings = [...bookings, ...packages];
-
-					// End of Packages
-
-					const csvString = [
-						["Nume", "Cabinet", "Data", "Data anulare", "Cost"],
-						...bookings.map((item) => [
-							item.Nume,
-							item.Cabinet,
-							item.Data,
-							item["Data anulare"],
-							item.Cost,
-						]),
-					]
-						.map((e) => e.join(","))
-						.join("\n");
-					// var encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvString);
-					// window.open(encodedUri);
-					var hiddenElement = document.createElement("a");
-					hiddenElement.href =
-						"data:text/csv;charset=utf-8," + encodeURI(csvString);
-					hiddenElement.target = "_blank";
-
-					//provide the name for the CSV file to be downloaded
-					hiddenElement.download = "rapoarte.csv";
-					hiddenElement.click();
+					setBookings(bookings);
 				}
 			})
 			.catch((error) => {
@@ -301,7 +320,7 @@ const Rapoarte = (props) => {
 			<div className='p-4'>
 				<h3 className='mb-4'>Descarca rapoarte</h3>
 				<div className='row'>
-					<div className='col-lg-4 mb-3'>
+					<div className='col-lg-6 mb-3'>
 						<select
 							onChange={(e) => setMonth(e.target.value)}
 							className='form-control'>
@@ -319,7 +338,7 @@ const Rapoarte = (props) => {
 							<option value='12'>Decembrie</option>
 						</select>
 					</div>
-					<div className='col-lg-4 mb-3'>
+					<div className='col-lg-6 mb-3'>
 						<select
 							onChange={(e) => setYear(e.target.value)}
 							className='form-control'>
@@ -332,12 +351,13 @@ const Rapoarte = (props) => {
 							<option value='2028'>2028</option>
 						</select>
 					</div>
-					<div className='col-lg-4'>
+					<div className='col-lg-6'>
 						<button
+							style={{ height: "38px" }}
 							disabled={loading}
 							onClick={submitHandler}
-							className='btn btn-primary w-100'>
-							Descarca raport{" "}
+							className='btn btn-sm btn-primary w-100'>
+							Afiseaza raport{" "}
 							{loading && (
 								<span
 									className='spinner-border spinner-border-sm'
@@ -346,7 +366,60 @@ const Rapoarte = (props) => {
 							)}
 						</button>
 					</div>
+					<div className='col-lg-6'>
+						{bookings.length !== 0 && (
+							<button
+								style={{ height: "38px" }}
+								onClick={downloadHandler}
+								className='btn btn-sm btn-primary w-100'>
+								Descarca raport
+							</button>
+						)}
+					</div>
 				</div>
+				{bookings.length !== 0 && (
+					<div className='mt-4 raport' ref={reportTemplateRef}>
+						<div className='m-2'>
+							<Image
+								src='/psymep.png'
+								width='128'
+								height='25.5'
+								className='img-fluid'
+							/>
+						</div>
+						<div className='r-banner'>Raport Rezervari</div>
+						<table className='table'>
+							<thead>
+								<tr>
+									<th scope='col'>Nume</th>
+									<th scope='col'>Cabinet</th>
+									<th scope='col'>Data</th>
+									<th scope='col'>Data anulare</th>
+									<th scope='col'>Cost</th>
+								</tr>
+							</thead>
+							<tbody>
+								{bookings.map((booking) => (
+									<tr key={Math.random()}>
+										<th scope='row'>{booking.Nume}</th>
+										<td>{booking.Cabinet}</td>
+										<td>
+											{booking.Data
+												? formatDateEmail(new Date(booking.Data))
+												: ""}
+										</td>
+										<td>
+											{booking["Data anulare"]
+												? formatDateEmail(new Date(booking["Data anulare"]))
+												: ""}
+										</td>
+										<td>{booking.Cost}</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				)}
 			</div>
 		</Layout>
 	);

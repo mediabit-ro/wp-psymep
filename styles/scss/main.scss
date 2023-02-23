@@ -437,3 +437,24 @@
 		}
 	}
 }
+
+.r-banner {
+	background-color: #211c18;
+	background-image: url(https://ci6.googleusercontent.com/proxy/om6z8gklvayKBoXj2L4cQbnCJWUfbweFKa5Wkw2ZA2XMvMeeOqGtp3iRBkixzOHcvDwOjwt7QNUwnsJvTOA2brVe2cWbKWFh8Mqv20pI=s0-d-e1-ft#https://www.psymep.ro/wp-content/uploads/2021/11/expert.jpg);
+	background-position: center top;
+	background-repeat: no-repeat;
+	background-size: cover;
+	color: white;
+	font-size: 0.9rem;
+	text-align: center;
+	padding: 15px;
+}
+
+.raport {
+	width: 500px;
+	font-size: 0.6rem;
+	table {
+		table-layout: fixed;
+		width: 500px;
+	}
+}

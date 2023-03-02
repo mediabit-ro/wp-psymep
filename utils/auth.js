@@ -3,7 +3,7 @@ import Router from "next/router";
 import nextCookie from "next-cookies";
 import cookie from "js-cookie";
 
-export const login = ({ token, id, name }) => {
+export const login = ({ token, id, name, terms }) => {
 	const admins = [92, 2];
 
 	if (admins.includes(id)) {
@@ -15,14 +15,15 @@ export const login = ({ token, id, name }) => {
 	cookie.set("token", token, { expires: 1 });
 	cookie.set("id", id, { expires: 1 });
 	cookie.set("name", name, { expires: 1 });
+	cookie.set("terms", terms, { expires: 1 });
 	Router.push("/calendar");
 };
 
 export const auth = (ctx) => {
-	const { token, name, id, adminId } = nextCookie(ctx);
+	const { token, name, id, adminId, terms } = nextCookie(ctx);
 
 	// If there's no token, it means the user is not logged in.
-	if (!token) {
+	if (!token || !terms) {
 		if (typeof window === "undefined") {
 			ctx.res.writeHead(302, { Location: "/login" });
 			ctx.res.end();
@@ -31,7 +32,7 @@ export const auth = (ctx) => {
 		}
 	}
 
-	return { token, name, id, adminId };
+	return { token, name, id, adminId, terms };
 };
 
 export const logout = () => {
@@ -66,13 +67,13 @@ export const withAuthSync = (WrappedComponent) => {
 	};
 
 	Wrapper.getInitialProps = async (ctx) => {
-		const { token, name, id, adminId } = auth(ctx);
+		const { token, name, id, adminId, terms } = auth(ctx);
 
 		const componentProps =
 			WrappedComponent.getInitialProps &&
 			(await WrappedComponent.getInitialProps(ctx));
 
-		return { ...componentProps, token, name, id, adminId };
+		return { ...componentProps, token, name, id, adminId, terms };
 	};
 
 	return Wrapper;

@@ -5,6 +5,7 @@ import { login } from "../utils/auth";
 import Link from "next/link";
 import Router from "next/router";
 import store from "../store/store";
+import cookie from "js-cookie";
 
 export default function Login() {
 	const [userData, setUserData] = useState({ username: "", error: "" });
@@ -64,21 +65,25 @@ export default function Login() {
 								.then((response) => {
 									console.log("response termeni", response);
 									let users = [];
-									if (response[0].acf.users)
-										users = response[0].acf.users.map((item) => item.user);
+									if (response[0].acf.users) users = response[0].acf.users;
 									// Get acf field users
-									console.log("Users", users, id);
 
-									if (users && users.includes(id)) {
+									let user = users.find((item) => item.user === id);
+
+									console.log("User", user);
+
+									if (users && user) {
 										// If user is in the list
 										console.log("User in terms list. Proceed to login");
-										login({ token, id, name });
+										login({ token, id, name, terms: user.data });
 									} else {
 										// If user is not in the list
+										console.log("Push termeni");
 										store.terms.content = response[0].content.rendered;
-										store.terms.user = { token, id, name };
+										store.terms.user = { token, id, name, data: new Date() };
 										store.terms.postId = response[0].id;
 										store.terms.users = users;
+
 										Router.push("/termeni-si-conditii");
 									}
 								})

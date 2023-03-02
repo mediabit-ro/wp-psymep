@@ -16,6 +16,7 @@ class Store {
 		content: "", // Content from post displayed in terms page
 		postId: 0, // Post id from post displayed in terms page
 		users: [], // Users from post displayed in terms page
+		data: new Date(),
 	};
 
 	// Toggle provider

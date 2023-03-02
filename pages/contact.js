@@ -6,6 +6,7 @@ import fetch from "isomorphic-unfetch";
 import nextCookie from "next-cookies";
 import Router from "next/router";
 import Layout from "../components/Layout";
+import Link from "next/link";
 
 const Contact = (props) => {
 	const { token, id, adminId, name } = props;
@@ -29,6 +30,14 @@ const Contact = (props) => {
 					<a href='mailto:elenastela.ivan@gmail.com'>
 						elenastela.ivan@gmail.com
 					</a>
+				</div>
+				<div>
+					<Link href='/termeni-si-conditii-2'>
+						<a>
+							<i className='bi bi-people-fill'></i>
+							Termeni si conditii
+						</a>
+					</Link>
 				</div>
 			</div>
 		</Layout>

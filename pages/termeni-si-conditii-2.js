@@ -25,7 +25,7 @@ const TermeniSiConditii2 = (props) => {
 			redirect: "follow",
 		};
 		fetch(
-			"https://mediabit.ro/booking-staging/wp-json/wp/v2/termeni?per_page=1",
+			"https://mediabit.ro/booking/wp-json/wp/v2/termeni?per_page=1",
 			requestOptions
 		)
 			.then((response) => response.json())

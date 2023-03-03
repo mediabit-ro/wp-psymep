@@ -708,9 +708,9 @@ const CalendarPage = observer((props) => {
 });
 
 CalendarPage.getInitialProps = (ctx) => {
-	const { token, id, adminId } = nextCookie(ctx);
+	const { token, id, adminId, terms } = nextCookie(ctx);
 
-	if (!token || !id) Router.push("/login");
+	if (!token || !id || !terms) Router.push("/login");
 
 	return {
 		token,

@@ -519,9 +519,9 @@ const Rapoarte = (props) => {
 };
 
 Rapoarte.getInitialProps = (ctx) => {
-	const { token, id, adminId, name } = nextCookie(ctx);
+	const { token, id, adminId, name, terms } = nextCookie(ctx);
 
-	if (!token || !id) Router.push("/login");
+	if (!token || !id || !terms) Router.push("/login");
 
 	return {
 		token,

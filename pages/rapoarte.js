@@ -37,6 +37,89 @@ const Rapoarte = (props) => {
 	const [bookings, setBookings] = useState([]);
 	const [packages, setPackages] = useState([]);
 
+	let lunaString = "";
+	let lunaCurenta = "";
+	switch (month) {
+		case "12":
+			lunaString = "Ianuarie";
+			break;
+		case "01":
+			lunaString = "Februarie";
+			break;
+		case "02":
+			lunaString = "Martie";
+			break;
+		case "03":
+			lunaString = "Aprilie";
+			break;
+		case "04":
+			lunaString = "Mai";
+			break;
+		case "05":
+			lunaString = "Iunie";
+			break;
+		case "06":
+			lunaString = "Iulie";
+			break;
+		case "07":
+			lunaString = "August";
+			break;
+		case "08":
+			lunaString = "Septembrie";
+			break;
+		case "09":
+			lunaString = "Octombrie";
+			break;
+		case "10":
+			lunaString = "Noiembrie";
+			break;
+		case "11":
+			lunaString = "Decembrie";
+			break;
+		default:
+			break;
+	}
+	switch (month) {
+		case "01":
+			lunaCurenta = "Ianuarie";
+			break;
+		case "02":
+			lunaCurenta = "Februarie";
+			break;
+		case "03":
+			lunaCurenta = "Martie";
+			break;
+		case "04":
+			lunaCurenta = "Aprilie";
+			break;
+		case "05":
+			lunaCurenta = "Mai";
+			break;
+		case "06":
+			lunaCurenta = "Iunie";
+			break;
+		case "07":
+			lunaCurenta = "Iulie";
+			break;
+		case "08":
+			lunaCurenta = "August";
+			break;
+		case "09":
+			lunaCurenta = "Septembrie";
+			break;
+		case "10":
+			lunaCurenta = "Octombrie";
+			break;
+		case "11":
+			lunaCurenta = "Noiembrie";
+			break;
+		case "12":
+			lunaCurenta = "Decembrie";
+			break;
+		default:
+			break;
+	}
+
 	const downloadHandler = () => {
 		const doc = new jsPDF({
 			unit: "pt",
@@ -103,89 +186,6 @@ const Rapoarte = (props) => {
 			.then((result) => {
 				console.log("res", result);
 				setLoading(false);
-
-				let lunaString = "";
-				let lunaCurenta = "";
-				switch (month) {
-					case "12":
-						lunaString = "Ianuarie";
-						break;
-					case "01":
-						lunaString = "Februarie";
-						break;
-					case "02":
-						lunaString = "Martie";
-						break;
-					case "03":
-						lunaString = "Aprilie";
-						break;
-					case "04":
-						lunaString = "Mai";
-						break;
-					case "05":
-						lunaString = "Iunie";
-						break;
-					case "06":
-						lunaString = "Iulie";
-						break;
-					case "07":
-						lunaString = "August";
-						break;
-					case "08":
-						lunaString = "Septembrie";
-						break;
-					case "09":
-						lunaString = "Octombrie";
-						break;
-					case "10":
-						lunaString = "Noiembrie";
-						break;
-					case "11":
-						lunaString = "Decembrie";
-						break;
-					default:
-						break;
-				}
-				switch (month) {
-					case "01":
-						lunaCurenta = "Ianuarie";
-						break;
-					case "02":
-						lunaCurenta = "Februarie";
-						break;
-					case "03":
-						lunaCurenta = "Martie";
-						break;
-					case "04":
-						lunaCurenta = "Aprilie";
-						break;
-					case "05":
-						lunaCurenta = "Mai";
-						break;
-					case "06":
-						lunaCurenta = "Iunie";
-						break;
-					case "07":
-						lunaCurenta = "Iulie";
-						break;
-					case "08":
-						lunaCurenta = "August";
-						break;
-					case "09":
-						lunaCurenta = "Septembrie";
-						break;
-					case "10":
-						lunaCurenta = "Octombrie";
-						break;
-					case "11":
-						lunaCurenta = "Noiembrie";
-						break;
-					case "12":
-						lunaCurenta = "Decembrie";
-						break;
-					default:
-						break;
-				}
 
 				// Convert data to CSV
 				if (result[0]) {
@@ -281,20 +281,28 @@ const Rapoarte = (props) => {
 						});
 					}
 
+					let total_inchirieri =
+						total1 +
+						total2 +
+						data.post.chirie_pe_jumatate_de_zi_tip_2 *
+							chirie_pe_jumatate_de_zi_tip_2 +
+						data.post.chirie_pe_jumatate_de_zi_tip_1 *
+							chirie_pe_jumatate_de_zi_tip_1;
+
+					if (data.post.deducere_chirie_luna_precedenta) {
+						total_inchirieri -= deducere;
+					}
+
+					if (data.post.chirie_luna_in_curs) {
+						total_inchirieri += chirie_luna;
+					}
+
 					packages.push({
 						Nume: `Total inchirieri`,
 						Cabinet: "",
 						Data: "",
 						"Data anulare": "",
-						Cost:
-							total1 +
-							total2 +
-							data.post.chirie_pe_jumatate_de_zi_tip_2 *
-								chirie_pe_jumatate_de_zi_tip_2 +
-							data.post.chirie_pe_jumatate_de_zi_tip_1 *
-								chirie_pe_jumatate_de_zi_tip_1 +
-							chirie_luna -
-							deducere,
+						Cost: total_inchirieri,
 					});
 
 					// PENALIZARE INTARZIERE PLATA
@@ -456,7 +464,7 @@ const Rapoarte = (props) => {
 							/>
 						</div>
 						<div className='r-banner'>
-							Raport Rezervari {month} x {year}
+							Raport Rezervari {lunaCurenta} {year}
 						</div>
 						<table className='table'>
 							<thead>

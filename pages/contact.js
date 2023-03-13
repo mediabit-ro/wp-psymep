@@ -28,7 +28,7 @@ const Contact = (props) => {
 		formData.append("your-message", message);
 
 		const res = fetch(
-			`http://psymep.test/contact-form-7/v1/contact-forms/38589/feedback`,
+			`https://mediabit.ro/booking-staging/contact-form-7/v1/contact-forms/38589/feedback`,
 			{
 				method: "POST",
 				// headers: {

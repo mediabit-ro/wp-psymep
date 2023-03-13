@@ -163,7 +163,7 @@ const Rapoarte = (props) => {
 
 		// Get post type 'preturi'
 		const response = await fetch(
-			"https://mediabit.ro/booking/wp-json/wp/v2/preturi?per_page=10",
+			"http://psymep.test/wp-json/wp/v2/preturi?per_page=10",
 			requestOptions
 		);
 
@@ -179,7 +179,7 @@ const Rapoarte = (props) => {
 		} = preturi[0].acf;
 
 		fetch(
-			`https://mediabit.ro/booking/wp-json/v1/get-reports-single?month=${month}&year=${year}&user=${id}`,
+			`http://psymep.test/wp-json/v1/get-reports-single?month=${month}&year=${year}&user=${id}`,
 			requestOptions
 		)
 			.then((response) => response.json())

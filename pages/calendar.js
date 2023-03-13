@@ -88,10 +88,7 @@ const CalendarPage = observer((props) => {
 			redirect: "follow",
 		};
 
-		fetch(
-			"https://mediabit.ro/booking/wp-json/wp/v2/users?per_page=500",
-			requestOptions
-		)
+		fetch("http://psymep.test/wp-json/wp/v2/users?per_page=500", requestOptions)
 			.then((response) => response.json())
 			.then((result) => {
 				setUsers(result);
@@ -102,7 +99,7 @@ const CalendarPage = observer((props) => {
 			});
 
 		fetch(
-			"https://mediabit.ro/booking/wp-json/wp/v2/categories?acf_format=standard&per_page=100&orderby=slug",
+			"http://psymep.test/wp-json/wp/v2/categories?acf_format=standard&per_page=100&orderby=slug",
 			requestOptions
 		)
 			.then((response) => response.json())
@@ -146,7 +143,7 @@ const CalendarPage = observer((props) => {
 		}
 		if (users.length)
 			fetch(
-				`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_start=${
+				`http://psymep.test/wp-json/wp/v2/posts/?data_start=${
 					now > weekStart && !(props.adminId && props.adminId === props.id)
 						? now
 						: weekStart
@@ -198,7 +195,7 @@ const CalendarPage = observer((props) => {
 			const now = formatDateYMD(roTimezone(new Date()));
 			const weekStart = formatDateYMD(getStartWeek(view));
 			fetch(
-				`https://mediabit.ro/booking/wp-json/times/ocupied/?data_start=${
+				`http://psymep.test/wp-json/times/ocupied/?data_start=${
 					now > weekStart ? now : weekStart
 				}&data_end=${formatDateYMD(getEndWeek(view))}${filter}&author=${
 					props.id
@@ -325,7 +322,7 @@ const CalendarPage = observer((props) => {
 				},
 			});
 
-			fetch("https://mediabit.ro/booking/wp-json/wp/v2/posts", requestOptions)
+			fetch("http://psymep.test/wp-json/wp/v2/posts", requestOptions)
 				.then((response) => response.json())
 				.then((result) => {
 					console.log("result", result);
@@ -388,12 +385,12 @@ const CalendarPage = observer((props) => {
 				};
 				console.log(
 					"URL",
-					`https://mediabit.ro/booking/wp-json/multiple/bookings/?data_start=${modalDataObj.toISOString()}&data_end=${endDate.toISOString()}&provider=${provider}&client=${
+					`http://psymep.test/wp-json/multiple/bookings/?data_start=${modalDataObj.toISOString()}&data_end=${endDate.toISOString()}&provider=${provider}&client=${
 						props.id
 					}&repeats=${recurrentEvents}`
 				);
 				fetch(
-					`https://mediabit.ro/booking/wp-json/multiple/bookings/?data_start=${modalDataObj.toISOString()}&data_end=${endDate.toISOString()}&provider=${provider}&client=${
+					`http://psymep.test/wp-json/multiple/bookings/?data_start=${modalDataObj.toISOString()}&data_end=${endDate.toISOString()}&provider=${provider}&client=${
 						props.id
 					}&repeats=${recurrentEvents}`,
 					requestOptions

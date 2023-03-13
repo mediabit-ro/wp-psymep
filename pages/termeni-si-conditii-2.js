@@ -24,10 +24,7 @@ const TermeniSiConditii2 = (props) => {
 			headers: myHeaders,
 			redirect: "follow",
 		};
-		fetch(
-			"https://mediabit.ro/booking/wp-json/wp/v2/termeni?per_page=1",
-			requestOptions
-		)
+		fetch("http://psymep.test/wp-json/wp/v2/termeni?per_page=1", requestOptions)
 			.then((response) => response.json())
 			.then((response) => {
 				setContent(response[0].content.rendered);

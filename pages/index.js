@@ -86,7 +86,7 @@ Home.getInitialProps = (ctx) => {
 	};
 
 	return fetch(
-		"https://mediabit.ro/booking/wp-json/wp/v2/categories?acf_format=standard&per_page=100&orderby=slug",
+		"http://psymep.test/wp-json/wp/v2/categories?acf_format=standard&per_page=100&orderby=slug",
 		requestOptions
 	)
 		.then((response) => response.json())

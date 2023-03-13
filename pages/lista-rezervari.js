@@ -172,7 +172,7 @@ const Rezerevari = observer((props) => {
 		// Get providers
 		if (!store.providers.length) {
 			fetch(
-				"https://mediabit.ro/booking/wp-json/wp/v2/categories?acf_format=standard&per_page=100",
+				"http://psymep.test/wp-json/wp/v2/categories?acf_format=standard&per_page=100",
 				requestOptions
 			)
 				.then((response) => response.json())
@@ -210,10 +210,7 @@ const Rezerevari = observer((props) => {
 			redirect: "follow",
 		};
 
-		fetch(
-			`https://mediabit.ro/booking/wp-json/wp/v2/posts/${id}`,
-			requestOptions
-		)
+		fetch(`http://psymep.test/wp-json/wp/v2/posts/${id}`, requestOptions)
 			.then((response) => response.json())
 			.then((result) => {
 				console.log("result", result);
@@ -265,7 +262,7 @@ const Rezerevari = observer((props) => {
 
 		booking.recurrentBookings.forEach((value) => {
 			fetch(
-				`https://mediabit.ro/booking/wp-json/wp/v2/posts/${value.id}`,
+				`http://psymep.test/wp-json/wp/v2/posts/${value.id}`,
 				requestOptions
 			)
 				.then((response) => response.json())

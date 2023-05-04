@@ -9,7 +9,7 @@ import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import Head from "next/head";
 
-const Layout = observer(({ children, adminId, name }) => {
+const Layout = observer(({ children, adminId, name, page, token }) => {
 	const router = useRouter();
 	const currentRoute = router.pathname;
 	const [dropdownState, setDropdownState] = useState(false);
@@ -133,6 +133,16 @@ const Layout = observer(({ children, adminId, name }) => {
 								<a className={currentRoute === "/accounts" ? "active" : ""}>
 									<i className='bi bi-people-fill'></i>
 									Accounts
+								</a>
+							</Link>
+						</div>
+					)}
+					{adminId && (
+						<div className='navbar-item'>
+							<Link href={`https://psymep.mediabit.ro/login?token=${token}`}>
+								<a>
+									<i className='bi bi-receipt-cutoff'></i>
+									Facturare
 								</a>
 							</Link>
 						</div>
@@ -261,6 +271,16 @@ const Layout = observer(({ children, adminId, name }) => {
 							</Link>
 						</div>
 					)}
+					{adminId && (
+						<div className='navbar-item'>
+							<Link href={`https://psymep.mediabit.ro/login?token=${token}`}>
+								<a>
+									<i className='bi bi-receipt-cutoff'></i>
+									Facturare
+								</a>
+							</Link>
+						</div>
+					)}
 					<div className='navbar-item'>
 						<button onClick={logout} className='btn btn-link p-0 ps-2'>
 							<i className='bi bi-box-arrow-right'></i>
@@ -268,7 +288,9 @@ const Layout = observer(({ children, adminId, name }) => {
 						</button>
 					</div>
 				</div>
-				<div className='main'>{children}</div>
+				<div className={"main" + (page === "calendar" ? " calendar" : "")}>
+					{children}
+				</div>
 			</div>
 		</div>
 	);

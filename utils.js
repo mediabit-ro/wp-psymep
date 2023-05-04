@@ -144,7 +144,7 @@ export function calculateAvailableTimes(intervals, duration) {
 export function getWordpressBookings() {
 	let clientBookings = [];
 	axios
-		.get("https://mediabit.ro/booking/wp-json/wp/v2/posts")
+		.get("https://mediabit.ro/booking-staging/wp-json/wp/v2/posts")
 		.then((res) => {
 			console.log("Res getWordpressBookings", res.data);
 			clientBookings = res.data.map((booking) => booking.acf);
@@ -172,7 +172,8 @@ export function generateProvidersUrl(activeProviders) {
 		12: 16,
 		13: 17,
 	};
-	let url = "https://mediabit.ro/booking/wp-json/wp/v2/posts?categories=";
+	let url =
+		"https://mediabit.ro/booking-staging/wp-json/wp/v2/posts?categories=";
 	activeProviders.forEach((provider) => {
 		url += providersMap[provider.id] + ",";
 	});
@@ -372,7 +373,7 @@ export async function getAllPosts(
 	let page = 1;
 	while (lastResultsLength === per_page) {
 		const newResults = await axios.get(
-			`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_start=${start_date}&data_end=${end_date}&status=${status}&per_page=${per_page}&page=${page}&author=${author}`,
+			`https://mediabit.ro/booking-staging/wp-json/wp/v2/posts/?data_start=${start_date}&data_end=${end_date}&status=${status}&per_page=${per_page}&page=${page}&author=${author}`,
 			{
 				headers: {
 					Authorization: "Bearer " + token,

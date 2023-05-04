@@ -10,12 +10,10 @@ import DateCell from "../components/DateCell";
 import {
 	formatDateHMS,
 	getEndDate,
-	colorSchema,
 	formatDateYMD,
 	getStartWeek,
 	getEndWeek,
 	selectTimes,
-	checkAvailableTime,
 	invertColor,
 	roTimezone,
 } from "../utils";
@@ -27,8 +25,7 @@ import ModalRez from "../components/BookingModal";
 import store from "../store/store";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
-import recurrentBooking from "../utils/recurrentBooking";
-import { nanoid } from "nanoid";
+import Toolbar from "../components/calendar/Toolbar";
 
 moment.locale("ro");
 
@@ -268,17 +265,20 @@ const CalendarPage = observer((props) => {
 			myHeaders.append("Authorization", `Bearer ${props.token}`);
 			myHeaders.append("Content-Type", "application/json");
 
-			console.log("Booking", {
-				client_id: 1,
-				provider_id: provider,
-				start_date: roTimezone(modalDataObj),
-				end_date: roTimezone(endDate),
-				location: "1",
-				status: "test",
-				recurrent,
-				filter_date: formatDateYMD(roTimezone(modalData)),
-				recurrent_id: recurrentId ? recurrentId : "",
-			});
+			console.log(
+				"Booking",
+				JSON.stringify({
+					client_id: 1,
+					provider_id: provider,
+					start_date: modalDataObj,
+					end_date: endDate,
+					location: "1",
+					status: "test",
+					recurrent,
+					filter_date: formatDateYMD(roTimezone(modalData)),
+					recurrent_id: recurrentId ? recurrentId : "",
+				})
+			);
 
 			var raw = JSON.stringify({
 				title: props.name,
@@ -532,7 +532,7 @@ const CalendarPage = observer((props) => {
 	};
 
 	return (
-		<Layout adminId={props.adminId} name={props.name}>
+		<Layout adminId={props.adminId} name={props.name} page='calendar'>
 			<Head>
 				<title>Psymep</title>
 				<meta name='description' content='Psymep' />
@@ -678,6 +678,7 @@ const CalendarPage = observer((props) => {
 							week: {
 								header: YourCalendarDateHeader,
 							},
+							toolbar: Toolbar,
 						}}
 						messages={{
 							next: ">",

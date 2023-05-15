@@ -175,6 +175,27 @@ const CalendarPage = observer((props) => {
 	}, [view, users, store.refreshTimes]);
 
 	useEffect(() => {
+		if (new Date() < getEndWeek(view) && new Date() > getStartWeek(view)) {
+			if (window.innerWidth < 768) {
+				// Get with day of the week is in number
+				let day = new Date().getDay();
+				// Scroll '.rbc-time-view' to the current day
+
+				const timeView = document.querySelector(".rbc-time-view");
+
+				console.log(timeView);
+
+				// Get all elements class .rbc-header
+				const headers = document.querySelectorAll(".rbc-header");
+
+				// // console.log("Scroll into view");
+				if (day == 7) day = 6;
+				if (day !== 1) headers[day].scrollIntoView({ behavior: "smooth" });
+			}
+		}
+	}, []);
+
+	useEffect(() => {
 		if (!props.adminId || (props.adminId && props.adminId !== props.id)) {
 			setLoadingBookings(true);
 			var myHeaders = new Headers();

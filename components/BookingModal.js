@@ -146,11 +146,11 @@ export default function BookingModal({
 								</tr>
 							</tbody>
 						</table>
-						<button
+						{/* <button
 							onClick={extendBookingHandler}
 							className='btn btn-outline-primary w-100'>
 							Prelungeste cu 30
-						</button>
+						</button> */}
 						<Link
 							href={`https://calendar.google.com/calendar/render?action=TEMPLATE&dates=${formatDate(
 								data.start

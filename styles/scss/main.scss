@@ -190,6 +190,12 @@
 	.rbc-timeslot-group {
 		.position-relative {
 			height: 20px;
+			top: -13px;
+			text-align: left;
+			background: white;
+			display: inline;
+			flex: 0 0 80%;
+			max-width: 80%;
 		}
 	}
 	.rbc-label {

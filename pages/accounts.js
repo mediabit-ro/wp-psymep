@@ -29,7 +29,7 @@ const Accounts = observer(({ id, token, adminId, name }) => {
 		};
 
 		fetch(
-			"https://mediabit.ro/booking-staging/wp-json/wp/v2/users?per_page=500",
+			process.env.NEXT_PUBLIC_URL + "/wp-json/wp/v2/users?per_page=500",
 			requestOptions
 		)
 			.then((response) => response.json())

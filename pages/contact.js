@@ -19,7 +19,7 @@ const Contact = (props) => {
 
 	useEffect(() => {
 		const res = fetch(
-			`https://mediabit.ro/booking-staging/wp-json/wp/v2/futures?per_page=100`,
+			`process.env.NEXT_PUBLIC_URL + "/wp-json/wp/v2/futures?per_page=100`,
 			{
 				method: "GET",
 				headers: {
@@ -48,18 +48,15 @@ const Contact = (props) => {
 		formData.append("message", message);
 		formData.append("subject", subject);
 
-		const res = fetch(
-			`https://mediabit.ro/booking-staging/wp-json/v1/send-mail`,
-			{
-				method: "POST",
-				// headers: {
-				// 	"Content-Type": "application/json",
-				// 	Authorization: `Bearer ${token}`,
-				// },
-				body: formData,
-				redirect: "follow",
-			}
-		)
+		const res = fetch(`${process.env.NEXT_PUBLIC_URL}/wp-json/v1/send-mail`, {
+			method: "POST",
+			// headers: {
+			// 	"Content-Type": "application/json",
+			// 	Authorization: `Bearer ${token}`,
+			// },
+			body: formData,
+			redirect: "follow",
+		})
 			.then((res) => res.json())
 			.then((res) => {
 				console.log("resssss", res);

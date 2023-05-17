@@ -53,7 +53,7 @@ export default function BookingModal({
 		};
 
 		fetch(
-			`https://mediabit.ro/booking-staging/wp-json/wp/v2/posts/${data.id}`,
+			`${process.env.NEXT_PUBLIC_URL}/wp-json/wp/v2/posts/${data.id}`,
 			requestOptions
 		)
 			.then((response) => response.json())
@@ -96,7 +96,7 @@ export default function BookingModal({
 		console.log(requestOptions, data.id, token);
 
 		fetch(
-			`https://mediabit.ro/booking-staging/wp-json/wp/v2/posts/${data.id}`,
+			`${process.env.NEXT_PUBLIC_URL}/wp-json/wp/v2/posts/${data.id}`,
 			requestOptions
 		)
 			.then((response) => response.json())

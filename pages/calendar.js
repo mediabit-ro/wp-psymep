@@ -10,12 +10,10 @@ import DateCell from "../components/DateCell";
 import {
 	formatDateHMS,
 	getEndDate,
-	colorSchema,
 	formatDateYMD,
 	getStartWeek,
 	getEndWeek,
 	selectTimes,
-	checkAvailableTime,
 	invertColor,
 	roTimezone,
 } from "../utils";
@@ -27,8 +25,7 @@ import ModalRez from "../components/BookingModal";
 import store from "../store/store";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
-import recurrentBooking from "../utils/recurrentBooking";
-import { nanoid } from "nanoid";
+import Toolbar from "../components/calendar/Toolbar";
 
 moment.locale("ro");
 
@@ -88,7 +85,10 @@ const CalendarPage = observer((props) => {
 			redirect: "follow",
 		};
 
-		fetch("http://psymep.test/wp-json/wp/v2/users?per_page=500", requestOptions)
+		fetch(
+			process.env.NEXT_PUBLIC_URL + "/wp-json/wp/v2/users?per_page=500",
+			requestOptions
+		)
 			.then((response) => response.json())
 			.then((result) => {
 				setUsers(result);
@@ -99,7 +99,8 @@ const CalendarPage = observer((props) => {
 			});
 
 		fetch(
-			"http://psymep.test/wp-json/wp/v2/categories?acf_format=standard&per_page=100&orderby=slug",
+			process.env.NEXT_PUBLIC_URL +
+				"/wp-json/wp/v2/categories?acf_format=standard&per_page=100&orderby=slug",
 			requestOptions
 		)
 			.then((response) => response.json())
@@ -143,7 +144,7 @@ const CalendarPage = observer((props) => {
 		}
 		if (users.length)
 			fetch(
-				`http://psymep.test/wp-json/wp/v2/posts/?data_start=${
+				`${process.env.NEXT_PUBLIC_URL}/wp-json/wp/v2/posts/?data_start=${
 					now > weekStart && !(props.adminId && props.adminId === props.id)
 						? now
 						: weekStart
@@ -175,6 +176,27 @@ const CalendarPage = observer((props) => {
 	}, [view, users, store.refreshTimes]);
 
 	useEffect(() => {
+		if (new Date() < getEndWeek(view) && new Date() > getStartWeek(view)) {
+			if (window.innerWidth < 768) {
+				// Get with day of the week is in number
+				let day = new Date().getDay();
+				// Scroll '.rbc-time-view' to the current day
+
+				const timeView = document.querySelector(".rbc-time-view");
+
+				console.log(timeView);
+
+				// Get all elements class .rbc-header
+				const headers = document.querySelectorAll(".rbc-header");
+
+				// // console.log("Scroll into view");
+				if (day == 7) day = 6;
+				if (day !== 1) headers[day].scrollIntoView({ behavior: "smooth" });
+			}
+		}
+	}, []);
+
+	useEffect(() => {
 		if (!props.adminId || (props.adminId && props.adminId !== props.id)) {
 			setLoadingBookings(true);
 			var myHeaders = new Headers();
@@ -195,7 +217,7 @@ const CalendarPage = observer((props) => {
 			const now = formatDateYMD(roTimezone(new Date()));
 			const weekStart = formatDateYMD(getStartWeek(view));
 			fetch(
-				`http://psymep.test/wp-json/times/ocupied/?data_start=${
+				`${process.env.NEXT_PUBLIC_URL}/wp-json/times/ocupied/?data_start=${
 					now > weekStart ? now : weekStart
 				}&data_end=${formatDateYMD(getEndWeek(view))}${filter}&author=${
 					props.id
@@ -265,17 +287,20 @@ const CalendarPage = observer((props) => {
 			myHeaders.append("Authorization", `Bearer ${props.token}`);
 			myHeaders.append("Content-Type", "application/json");
 
-			console.log("Booking", {
-				client_id: 1,
-				provider_id: provider,
-				start_date: roTimezone(modalDataObj),
-				end_date: roTimezone(endDate),
-				location: "1",
-				status: "test",
-				recurrent,
-				filter_date: formatDateYMD(roTimezone(modalData)),
-				recurrent_id: recurrentId ? recurrentId : "",
-			});
+			console.log(
+				"Booking",
+				JSON.stringify({
+					client_id: 1,
+					provider_id: provider,
+					start_date: modalDataObj,
+					end_date: endDate,
+					location: "1",
+					status: "test",
+					recurrent,
+					filter_date: formatDateYMD(roTimezone(modalData)),
+					recurrent_id: recurrentId ? recurrentId : "",
+				})
+			);
 
 			var raw = JSON.stringify({
 				title: props.name,
@@ -322,7 +347,10 @@ const CalendarPage = observer((props) => {
 				},
 			});
 
-			fetch("http://psymep.test/wp-json/wp/v2/posts", requestOptions)
+			fetch(
+				process.env.NEXT_PUBLIC_URL + "/wp-json/wp/v2/posts",
+				requestOptions
+			)
 				.then((response) => response.json())
 				.then((result) => {
 					console.log("result", result);
@@ -383,14 +411,10 @@ const CalendarPage = observer((props) => {
 					headers: myHeaders,
 					redirect: "follow",
 				};
-				console.log(
-					"URL",
-					`http://psymep.test/wp-json/multiple/bookings/?data_start=${modalDataObj.toISOString()}&data_end=${endDate.toISOString()}&provider=${provider}&client=${
-						props.id
-					}&repeats=${recurrentEvents}`
-				);
 				fetch(
-					`http://psymep.test/wp-json/multiple/bookings/?data_start=${modalDataObj.toISOString()}&data_end=${endDate.toISOString()}&provider=${provider}&client=${
+					`${
+						process.env.NEXT_PUBLIC_URL
+					}/wp-json/multiple/bookings/?data_start=${modalDataObj.toISOString()}&data_end=${endDate.toISOString()}&provider=${provider}&client=${
 						props.id
 					}&repeats=${recurrentEvents}`,
 					requestOptions
@@ -526,7 +550,7 @@ const CalendarPage = observer((props) => {
 	};
 
 	return (
-		<Layout adminId={props.adminId} name={props.name}>
+		<Layout adminId={props.adminId} name={props.name} page='calendar'>
 			<Head>
 				<title>Psymep</title>
 				<meta name='description' content='Psymep' />
@@ -672,6 +696,7 @@ const CalendarPage = observer((props) => {
 							week: {
 								header: YourCalendarDateHeader,
 							},
+							toolbar: Toolbar,
 						}}
 						messages={{
 							next: ">",

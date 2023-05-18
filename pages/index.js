@@ -86,7 +86,8 @@ Home.getInitialProps = (ctx) => {
 	};
 
 	return fetch(
-		"http://psymep.test/wp-json/wp/v2/categories?acf_format=standard&per_page=100&orderby=slug",
+		process.env.NEXT_PUBLIC_URL +
+			"/wp-json/wp/v2/categories?acf_format=standard&per_page=100&orderby=slug",
 		requestOptions
 	)
 		.then((response) => response.json())

@@ -34,7 +34,7 @@ export default function Login() {
 			};
 
 			fetch(
-				`http://psymep.test/wp-json/newpass/user/?email=${email}`,
+				`${process.env.NEXT_PUBLIC_URL}/wp-json/newpass/user/?email=${email}`,
 				requestOptions
 			)
 				.then((response) => response.json())
@@ -71,7 +71,7 @@ export default function Login() {
 			};
 
 			fetch(
-				`http://psymep.test/wp-json/newpass/user/?email=${email}&pass=${password1}`,
+				`${process.env.NEXT_PUBLIC_URL}/wp-json/newpass/user/?email=${email}&pass=${password1}`,
 				requestOptions
 			)
 				.then((response) => response.json())

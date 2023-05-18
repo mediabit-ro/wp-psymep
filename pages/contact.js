@@ -14,33 +14,55 @@ const Contact = (props) => {
 	const [subject, setSubject] = useState();
 	const [message, setMessage] = useState();
 	const [state, setState] = useState(false);
+	const [futures, setFutures] = useState();
+	const [response, setResponse] = useState();
 
-	const subjects = ["Subiect 1", "Subiect 2", "Subiect 3"];
+	useEffect(() => {
+		const res = fetch(
+			`${process.env.NEXT_PUBLIC_URL}/wp-json/wp/v2/futures?per_page=100`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+				redirect: "follow",
+			}
+		)
+			.then((res) => res.json())
+			.then((res) => {
+				console.log("Futures", res);
+				setFutures(res[0]);
+			});
+	}, []);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
 		setState("loading");
 
-		const formData = new FormData();
-		formData.append("your-name", name);
-		formData.append("your-subject", subject);
-		formData.append("your-message", message);
+		console.log("id", id);
 
-		const res = fetch(
-			`http://psymep.test/contact-form-7/v1/contact-forms/38589/feedback`,
-			{
-				method: "POST",
-				// headers: {
-				// 	"Content-Type": "application/json",
-				// 	Authorization: `Bearer ${token}`,
-				// },
-				body: formData,
-				redirect: "follow",
-			}
-		)
+		const formData = new FormData();
+		formData.append("id", id);
+		formData.append("message", message);
+		formData.append("subject", subject);
+
+		const res = fetch(`${process.env.NEXT_PUBLIC_URL}/wp-json/v1/send-mail`, {
+			method: "POST",
+			// headers: {
+			// 	"Content-Type": "application/json",
+			// 	Authorization: `Bearer ${token}`,
+			// },
+			body: formData,
+			redirect: "follow",
+		})
 			.then((res) => res.json())
-			.then((res) => console.log("resssss", res));
+			.then((res) => {
+				console.log("resssss", res);
+				setState(false);
+				setResponse("Mesajul a fost trimis cu succes");
+			});
 	};
 
 	return (
@@ -88,18 +110,12 @@ const Contact = (props) => {
 						</table>
 						<div className='mt-4'>
 							<h2>Contacteaza-ne</h2>
-							<select
-								className='form-control'
-								onChange={(e) => setSubject(e.target.value)}>
-								<option disabled value=''>
-									Alege subiect
-								</option>
-								{subjects.map((subject) => (
-									<option key={subject} value={subject}>
-										{subject}
-									</option>
-								))}
-							</select>
+							<input
+								type='text'
+								placeholder='subiect'
+								className='form-control mt-2'
+								onInput={(e) => setSubject(e.target.value)}
+							/>
 							<textarea
 								className='form-control mt-2'
 								onChange={(e) => setMessage(e.target.value)}
@@ -115,12 +131,26 @@ const Contact = (props) => {
 										role='status'></div>
 								)}
 							</button>
+							{response && (
+								<div className='alert alert-success mt-2'>{response}</div>
+							)}
 							{state === "error" && (
 								<div className='alert alert-danger mt-2'>
 									Mesajul nu a putut fi trimis
 								</div>
 							)}
 						</div>
+						{futures && (
+							<div className='mt-4'>
+								<h2
+									dangerouslySetInnerHTML={{
+										__html: futures.title.rendered,
+									}}></h2>
+								<div
+									dangerouslySetInnerHTML={{ __html: futures.content.rendered }}
+								/>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

@@ -24,7 +24,10 @@ const TermeniSiConditii2 = (props) => {
 			headers: myHeaders,
 			redirect: "follow",
 		};
-		fetch("http://psymep.test/wp-json/wp/v2/termeni?per_page=1", requestOptions)
+		fetch(
+			process.env.NEXT_PUBLIC_URL + "/wp-json/wp/v2/termeni?per_page=1",
+			requestOptions
+		)
 			.then((response) => response.json())
 			.then((response) => {
 				setContent(response[0].content.rendered);

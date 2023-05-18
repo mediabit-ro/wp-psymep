@@ -11,11 +11,18 @@
 }
 
 .main {
-	border: 1px solid #efefef;
-	border-radius: 15px;
 	flex: 0 0 100%;
 	max-width: 100%;
-	overflow: hidden;
+	@include media-breakpoint-up(lg) {
+		&:not(.calendar) {
+			border: 1px solid #efefef;
+			overflow: hidden;
+			border-radius: 15px;
+		}
+		&.calendar .rbc-calendar {
+			padding: 0;
+		}
+	}
 }
 
 @include media-breakpoint-up(lg) {
@@ -161,6 +168,7 @@
 	padding: 20px;
 	background-color: #fff;
 	border-radius: 8px;
+
 	.rbc-time-view {
 		position: relative;
 		// padding-left:50px;
@@ -182,6 +190,12 @@
 	.rbc-timeslot-group {
 		.position-relative {
 			height: 20px;
+			top: -13px;
+			text-align: left;
+			background: white;
+			display: inline;
+			flex: 0 0 80%;
+			max-width: 80%;
 		}
 	}
 	.rbc-label {
@@ -197,6 +211,25 @@
 
 	.rbc-time-view .rbc-row div:nth-child(1) {
 		height: 0px !important;
+	}
+	.rbc-time-gutter:first-child div {
+		opacity: 0;
+	}
+	@include media-breakpoint-up(lg) {
+		.rbc-time-gutter:first-child div {
+			opacity: 1;
+		}
+		.rbc-timeslot-group:first-child div {
+			opacity: 0;
+		}
+		.rbc-timeslot-group div {
+			top: -13px;
+			text-align: left;
+			background: white;
+			display: inline;
+			flex: 0 0 80%;
+			max-width: 80%;
+		}
 	}
 }
 
@@ -290,14 +323,14 @@
 }
 
 *::-webkit-scrollbar {
-	width: 3px;
+	width: 8px;
+	height: 8px;
 	// background-color: #333;
 	border-radius: 4px;
 }
 
 *::-webkit-scrollbar-thumb {
 	background: rgba(206, 41, 41, 0.6);
-	border-radius: 4px;
 }
 
 .loading-bookings {
@@ -457,4 +490,16 @@
 		table-layout: fixed;
 		width: 500px;
 	}
+}
+
+.rbc-toolbar-label {
+	text-transform: capitalize;
+}
+
+.rbc-calendar {
+	height: auto !important;
+}
+
+.btn-outline-primary:hover {
+	color: white;
 }

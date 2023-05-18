@@ -28,7 +28,10 @@ const Accounts = observer(({ id, token, adminId, name }) => {
 			redirect: "follow",
 		};
 
-		fetch("http://psymep.test/wp-json/wp/v2/users?per_page=500", requestOptions)
+		fetch(
+			process.env.NEXT_PUBLIC_URL + "/wp-json/wp/v2/users?per_page=500",
+			requestOptions
+		)
 			.then((response) => response.json())
 			.then((result) => {
 				console.log("res", result);

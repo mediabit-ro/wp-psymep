@@ -172,7 +172,8 @@ const Rezerevari = observer((props) => {
 		// Get providers
 		if (!store.providers.length) {
 			fetch(
-				"http://psymep.test/wp-json/wp/v2/categories?acf_format=standard&per_page=100",
+				process.env.NEXT_PUBLIC_URL +
+					"/wp-json/wp/v2/categories?acf_format=standard&per_page=100",
 				requestOptions
 			)
 				.then((response) => response.json())
@@ -210,7 +211,10 @@ const Rezerevari = observer((props) => {
 			redirect: "follow",
 		};
 
-		fetch(`http://psymep.test/wp-json/wp/v2/posts/${id}`, requestOptions)
+		fetch(
+			`${process.env.NEXT_PUBLIC_URL}/wp-json/wp/v2/posts/${id}`,
+			requestOptions
+		)
 			.then((response) => response.json())
 			.then((result) => {
 				console.log("result", result);
@@ -262,7 +266,7 @@ const Rezerevari = observer((props) => {
 
 		booking.recurrentBookings.forEach((value) => {
 			fetch(
-				`http://psymep.test/wp-json/wp/v2/posts/${value.id}`,
+				`${process.env.NEXT_PUBLIC_URL}/wp-json/wp/v2/posts/${value.id}`,
 				requestOptions
 			)
 				.then((response) => response.json())
@@ -298,7 +302,7 @@ const Rezerevari = observer((props) => {
 		setBookings([...bookings]);
 	};
 
-	console.log("Old bookings", oldBookings);
+	console.log("Bookings", bookings);
 
 	return (
 		<Layout adminId={adminId} name={name}>
@@ -337,22 +341,25 @@ const Rezerevari = observer((props) => {
 													: formatDateReadable(roTimezone(booking.start_date))}
 											</td>
 											<td>
-												<button
-													onClick={() =>
-														booking.recurrent
-															? cancelBookingRecurrentHandler(booking)
-															: cancelBookingHandler(booking.id)
-													}
-													disabled={booking.loading}
-													className='btn btn-primary px-4 py-2'>
-													Anulează
-													{booking.recurrent ? " recurentă" : " rezervare"}
-													{booking.loading && (
-														<div
-															className='spinner-border spinner-border-sm ms-2 text-light'
-															role='status'></div>
-													)}
-												</button>
+												{(booking.start_date > new Date().toISOString() ||
+													booking.recurrentBookings) && (
+													<button
+														onClick={() =>
+															booking.recurrent
+																? cancelBookingRecurrentHandler(booking)
+																: cancelBookingHandler(booking.id)
+														}
+														disabled={booking.loading}
+														className='btn btn-primary px-4 py-2'>
+														Anulează
+														{booking.recurrent ? " recurentă" : " rezervare"}
+														{booking.loading && (
+															<div
+																className='spinner-border spinner-border-sm ms-2 text-light'
+																role='status'></div>
+														)}
+													</button>
+												)}
 											</td>
 											<td>
 												{booking.recurrent && (
@@ -380,22 +387,25 @@ const Rezerevari = observer((props) => {
 															)}
 														</td>
 														<td>
-															<button
-																disabled={recurrentBooking.loading}
-																onClick={() =>
-																	cancelBookingHandler(
-																		recurrentBooking.id,
-																		booking
-																	)
-																}
-																className='btn btn-primary px-3 py-1 small'>
-																Anulează rezervare
-																{recurrentBooking.loading && (
-																	<div
-																		className='spinner-border spinner-border-sm ms-2 text-light'
-																		role='status'></div>
-																)}
-															</button>
+															{recurrentBooking.start_date >
+																new Date().toISOString() && (
+																<button
+																	disabled={recurrentBooking.loading}
+																	onClick={() =>
+																		cancelBookingHandler(
+																			recurrentBooking.id,
+																			booking
+																		)
+																	}
+																	className='btn btn-primary px-3 py-1 small'>
+																	Anulează rezervare
+																	{recurrentBooking.loading && (
+																		<div
+																			className='spinner-border spinner-border-sm ms-2 text-light'
+																			role='status'></div>
+																	)}
+																</button>
+															)}
 														</td>
 														<td></td>
 													</tr>

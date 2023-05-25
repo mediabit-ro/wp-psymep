@@ -35,6 +35,13 @@ class Store {
 		else this.activeProviders.push(provider);
 		this.refreshTimes = !this.refreshTimes;
 	}
+
+	myBookings = false;
+
+	toggleMyBookings() {
+		this.myBookings = !this.myBookings;
+		this.refreshTimes = !this.refreshTimes;
+	}
 }
 
 const store = new Store();

@@ -144,17 +144,30 @@ const CalendarPage = observer((props) => {
 		}
 		if (users.length)
 			fetch(
-				`${process.env.NEXT_PUBLIC_URL}/wp-json/wp/v2/posts/?data_start=${
-					now > weekStart && !(props.adminId && props.adminId === props.id)
-						? now
-						: weekStart
-				}&data_end=${formatDateYMD(getEndWeek(view))}&status=private${author}` +
+				`${
+					process.env.NEXT_PUBLIC_URL
+				}/wp-json/wp/v2/posts/?data_start=${weekStart}&data_end=${formatDateYMD(
+					getEndWeek(view)
+				)}&status=private${author}` +
 					filter +
 					"&per_page=500",
 				requestOptions
 			)
 				.then((response) => response.json())
 				.then((result) => {
+					console.log(
+						"My bookings",
+						result.map((event) => {
+							const user = users.find((user) => user.id === event.author);
+							return {
+								title: user ? user.name : props.name,
+								start: roTimezone(new Date(event.acf.start_date)),
+								end: roTimezone(new Date(event.acf.end_date)),
+								provider_id: event.acf.provider_id,
+								id: event.id,
+							};
+						})
+					);
 					setEvents(
 						result.map((event) => {
 							const user = users.find((user) => user.id === event.author);
@@ -173,7 +186,7 @@ const CalendarPage = observer((props) => {
 					console.log("error", error);
 					Router.push("/login");
 				});
-	}, [view, users, store.refreshTimes]);
+	}, [view, users, store.refreshTimes, store.myBookings]);
 
 	useEffect(() => {
 		if (new Date() < getEndWeek(view) && new Date() > getStartWeek(view)) {
@@ -197,7 +210,11 @@ const CalendarPage = observer((props) => {
 	}, []);
 
 	useEffect(() => {
-		if (!props.adminId || (props.adminId && props.adminId !== props.id)) {
+		if (
+			!store.myBookings &&
+			(!props.adminId || (props.adminId && props.adminId !== props.id))
+		) {
+			console.log("myBookings", store.myBookings);
 			setLoadingBookings(true);
 			var myHeaders = new Headers();
 			myHeaders.append("Authorization", `Bearer ${props.token}`);
@@ -679,7 +696,7 @@ const CalendarPage = observer((props) => {
 				<div className='calendar-wrap'>
 					<Calendar
 						localizer={localizer}
-						events={[...events, ...times]}
+						events={store.myBookings ? events : [...events, ...times]}
 						view='week'
 						views={["week"]}
 						min={new Date(2021, 2, 8, 7, 0)} // 8.00 AM

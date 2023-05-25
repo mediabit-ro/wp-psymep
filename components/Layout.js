@@ -65,6 +65,23 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 					</div>
 
 					<div style={{ margin: "-15px 0 0 15px" }}>
+						<div key={Math.random()} className='form-check'>
+							<input
+								className='form-check-input'
+								type='checkbox'
+								value=''
+								style={{
+									backgroundColor: "black",
+									borderColor: "black",
+								}}
+								onChange={() => store.toggleMyBookings()}
+								checked={store.myBookings}
+								id='sbapmybookings'
+							/>
+							<label htmlFor={"sbapmybookings"} className='form-check-label'>
+								Doar programarile mele
+							</label>
+						</div>
 						{store.locations
 							.filter((location) =>
 								store.providers.find(
@@ -104,15 +121,6 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 							))}
 					</div>
 
-					<div className='navbar-item'>
-						<Link href='/lista-rezervari'>
-							<a
-								className={currentRoute === "/lista-rezervari" ? "active" : ""}>
-								<i className='bi bi-list-ul'></i>
-								Listă Rezervări
-							</a>
-						</Link>
-					</div>
 					<div className='navbar-item'>
 						<a rel='noreferrer' href='tel:0766472857' target='_blank'>
 							<i className='bi bi-person-lines-fill'></i>
@@ -197,6 +205,23 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 					</div>
 
 					<div style={{ margin: "-15px 0 0 15px" }}>
+						<div key={Math.random()} className='form-check'>
+							<input
+								className='form-check-input'
+								type='checkbox'
+								value=''
+								style={{
+									backgroundColor: "black",
+									borderColor: "black",
+								}}
+								onChange={() => store.toggleMyBookings()}
+								checked={store.myBookings}
+								id='mbapmybookings'
+							/>
+							<label htmlFor={"mbapmybookings"} className='form-check-label'>
+								Programarile mele
+							</label>
+						</div>
 						{store.locations
 							.filter((location) =>
 								store.providers.find(
@@ -236,15 +261,6 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 							))}
 					</div>
 
-					<div className='navbar-item'>
-						<Link href='/lista-rezervari'>
-							<a
-								className={currentRoute === "/lista-rezervari" ? "active" : ""}>
-								<i className='bi bi-list-ul'></i>
-								Listă Rezervări
-							</a>
-						</Link>
-					</div>
 					<div className='navbar-item'>
 						<Link href='/contact'>
 							<a className={currentRoute === "/contact" ? "active" : ""}>

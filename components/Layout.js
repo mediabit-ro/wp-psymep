@@ -65,23 +65,6 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 					</div>
 
 					<div style={{ margin: "-15px 0 0 15px" }}>
-						<div key={Math.random()} className='form-check'>
-							<input
-								className='form-check-input'
-								type='checkbox'
-								value=''
-								style={{
-									backgroundColor: "black",
-									borderColor: "black",
-								}}
-								onChange={() => store.toggleMyBookings()}
-								checked={store.myBookings}
-								id='sbapmybookings'
-							/>
-							<label htmlFor={"sbapmybookings"} className='form-check-label'>
-								Doar programarile mele
-							</label>
-						</div>
 						{store.locations
 							.filter((location) =>
 								store.providers.find(
@@ -205,7 +188,7 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 					</div>
 
 					<div style={{ margin: "-15px 0 0 15px" }}>
-						<div key={Math.random()} className='form-check'>
+						{/* <div key={Math.random()} className='form-check'>
 							<input
 								className='form-check-input'
 								type='checkbox'
@@ -221,7 +204,7 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 							<label htmlFor={"mbapmybookings"} className='form-check-label'>
 								Programarile mele
 							</label>
-						</div>
+						</div> */}
 						{store.locations
 							.filter((location) =>
 								store.providers.find(

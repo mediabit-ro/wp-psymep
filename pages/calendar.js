@@ -126,7 +126,7 @@ const CalendarPage = observer((props) => {
 			redirect: "follow",
 		};
 		let filter = "";
-		if (store.activeProviders.length) {
+		if (store.activeProviders.length && !store.myBookings) {
 			filter = "&categories=";
 			store.activeProviders.forEach(
 				(provider) => (filter += provider.id + ",")
@@ -645,6 +645,7 @@ const CalendarPage = observer((props) => {
 							</label>
 							{recurrent && (
 								<input
+									style={{ maxWidth: "75px" }}
 									value={recurrentEvents}
 									type='number'
 									onInput={(e) => recurentEventsHandler(e)}
@@ -741,27 +742,6 @@ const CalendarPage = observer((props) => {
 							style={{ width: "3rem", height: "3rem" }}></div>
 					</div>
 				)}
-				<div className='text-end'>
-					<div
-						key={Math.random()}
-						className='form-check d-inline-block mt-3 me-4'>
-						<input
-							className='form-check-input'
-							type='checkbox'
-							value=''
-							style={{
-								backgroundColor: "black",
-								borderColor: "black",
-							}}
-							onChange={() => store.toggleMyBookings()}
-							checked={store.myBookings}
-							id='sbapmybookings'
-						/>
-						<label htmlFor={"sbapmybookings"} className='form-check-label'>
-							Programarile mele
-						</label>
-					</div>
-				</div>
 			</div>
 		</Layout>
 	);

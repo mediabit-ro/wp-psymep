@@ -101,7 +101,7 @@ const Contact = (props) => {
 										<Link href='/termeni-si-conditii-2'>
 											<a>
 												<i className='bi bi-people-fill'></i>
-												Termeni si conditii
+												Termeni și condiții
 											</a>
 										</Link>
 									</td>
@@ -109,7 +109,7 @@ const Contact = (props) => {
 							</tbody>
 						</table>
 						<div className='mt-4'>
-							<h2>Contacteaza-ne</h2>
+							<h2>Contactează-ne</h2>
 							<input
 								type='text'
 								placeholder='subiect'

@@ -55,6 +55,27 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 						</Link>
 					</div>
 
+					<div
+						style={{ margin: "0 0 0 15px" }}
+						key={Math.random()}
+						className='form-check d-inline-block'>
+						<input
+							className='form-check-input'
+							type='checkbox'
+							value=''
+							style={{
+								backgroundColor: "black",
+								borderColor: "black",
+							}}
+							onChange={() => store.toggleMyBookings()}
+							checked={store.myBookings}
+							id='mbapmybookings'
+						/>
+						<label htmlFor={"mbapmybookings"} className='form-check-label'>
+							Programarile mele
+						</label>
+					</div>
+
 					<div className='navbar-item'>
 						<Link href='/'>
 							<a className={currentRoute === "/" ? "active" : ""}>
@@ -102,6 +123,13 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 										))}
 								</div>
 							))}
+					</div>
+
+					<div className='navbar-item'>
+						<a href='/lista-rezervari'>
+							<i className='bi bi-list-ul'></i>
+							Listă Rezervări
+						</a>
 					</div>
 
 					<div className='navbar-item'>
@@ -178,6 +206,27 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 						</Link>
 					</div>
 
+					<div
+						style={{ margin: "0 0 0 15px" }}
+						key={Math.random()}
+						className='form-check d-inline-block'>
+						<input
+							className='form-check-input'
+							type='checkbox'
+							value=''
+							style={{
+								backgroundColor: "black",
+								borderColor: "black",
+							}}
+							onChange={() => store.toggleMyBookings()}
+							checked={store.myBookings}
+							id='sbapmybookings'
+						/>
+						<label htmlFor={"sbapmybookings"} className='form-check-label'>
+							Programarile mele
+						</label>
+					</div>
+
 					<div className='navbar-item'>
 						<Link href='/'>
 							<a className={currentRoute === "/" ? "active" : ""}>
@@ -242,6 +291,13 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 										))}
 								</div>
 							))}
+					</div>
+
+					<div className='navbar-item'>
+						<a href='/lista-rezervari'>
+							<i className='bi bi-list-ul'></i>
+							Listă Rezervări
+						</a>
 					</div>
 
 					<div className='navbar-item'>

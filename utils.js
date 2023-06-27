@@ -357,6 +357,39 @@ export const filterCanceled = (bookingDate, createDate, canceledDate) => {
 	return false;
 };
 
+// Get all bookings
+export async function getAllPosts(
+	start_date,
+	end_date,
+	status,
+	per_page,
+	token,
+	author,
+	callback
+) {
+	let posts = [];
+	let lastResultsLength = per_page;
+	let page = 1;
+	while (lastResultsLength === per_page) {
+		const newResults = await axios.get(
+			`${process.env.NEXT_PUBLIC_URL}/wp-json/wp/v2/posts/?data_start=${start_date}&data_end=${end_date}&status=${status}&per_page=${per_page}&page=${page}&author=${author}`,
+			{
+				headers: {
+					Authorization: "Bearer " + token,
+				},
+			}
+		);
+		page++;
+		lastResultsLength = newResults.data.length;
+		posts = posts.concat(newResults.data);
+		console.log(
+			"newResults",
+			newResults.data.map((item) => item.acf)
+		);
+	}
+	callback(posts);
+}
+
 export const roTimezone = (date) => {
 	function changeTimeZone(date, timeZone) {
 		if (typeof date === "string") {

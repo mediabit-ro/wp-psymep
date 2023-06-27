@@ -295,7 +295,7 @@ const Rezerevari = observer((props) => {
 			</Head>
 			<div className='rez-list'>
 				<DynamicTabs defaultActiveKey='home'>
-					<Tab eventKey='home' title='Lista rezervari'>
+					<Tab eventKey='home' title='Listă rezervări'>
 						<table className='table table-bordered'>
 							<thead>
 								<td>

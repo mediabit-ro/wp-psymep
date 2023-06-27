@@ -72,7 +72,7 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 							id='mbapmybookings'
 						/>
 						<label htmlFor={"mbapmybookings"} className='form-check-label'>
-							Programarile mele
+							Programările mele
 						</label>
 					</div>
 
@@ -136,10 +136,12 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 					</div>
 
 					<div className='navbar-item'>
-						<a rel='noreferrer' href='tel:0766472857' target='_blank'>
-							<i className='bi bi-person-lines-fill'></i>
-							Contact
-						</a>
+						<Link href='/contact'>
+							<a className={currentRoute === "/contact" ? "active" : ""}>
+								<i className='bi bi-list-ul'></i>
+								Contact
+							</a>
+						</Link>
 					</div>
 					<div className='navbar-item'>
 						<Link href='/rapoarte'>
@@ -226,7 +228,7 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 							id='sbapmybookings'
 						/>
 						<label htmlFor={"sbapmybookings"} className='form-check-label'>
-							Programarile mele
+							Programările mele
 						</label>
 					</div>
 
@@ -254,7 +256,7 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 								id='mbapmybookings'
 							/>
 							<label htmlFor={"mbapmybookings"} className='form-check-label'>
-								Programarile mele
+								Programările mele
 							</label>
 						</div> */}
 						{store.locations

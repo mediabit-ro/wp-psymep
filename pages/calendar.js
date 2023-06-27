@@ -641,7 +641,7 @@ const CalendarPage = observer((props) => {
 							/>
 							<label className='form-check-label'>
 								Rezervare recurentă{" "}
-								{recurrent && " (alege numarul de repetari)"}
+								{recurrent && " (alege numărul de repetări)"}
 							</label>
 							{recurrent && (
 								<input

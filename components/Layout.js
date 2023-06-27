@@ -126,10 +126,13 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 					</div>
 
 					<div className='navbar-item'>
-						<a href='/lista-rezervari'>
-							<i className='bi bi-list-ul'></i>
-							Listă Rezervări
-						</a>
+						<Link href='/lista-rezervari'>
+							<a
+								className={currentRoute === "/lista-rezervari" ? "active" : ""}>
+								<i className='bi bi-list-ul'></i>
+								Listă Rezervări
+							</a>
+						</Link>
 					</div>
 
 					<div className='navbar-item'>
@@ -294,10 +297,13 @@ const Layout = observer(({ children, adminId, name, page, token }) => {
 					</div>
 
 					<div className='navbar-item'>
-						<a href='/lista-rezervari'>
-							<i className='bi bi-list-ul'></i>
-							Listă Rezervări
-						</a>
+						<Link href='/lista-rezervari'>
+							<a
+								className={currentRoute === "/lista-rezervari" ? "active" : ""}>
+								<i className='bi bi-list-ul'></i>
+								Listă Rezervări
+							</a>
+						</Link>
 					</div>
 
 					<div className='navbar-item'>

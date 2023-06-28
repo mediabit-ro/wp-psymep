@@ -299,7 +299,7 @@ const Rezerevari = observer((props) => {
 						<table className='table table-bordered'>
 							<thead>
 								<td>
-									<strong>Cameră</strong>
+									<strong>Cabinet</strong>
 								</td>
 								<td>
 									<strong>Dată</strong>
@@ -401,7 +401,7 @@ const Rezerevari = observer((props) => {
 						<table className='table table-bordered'>
 							<thead>
 								<td>
-									<strong>Cameră</strong>
+									<strong>Cabinet</strong>
 								</td>
 								<td>
 									<strong>Dată</strong>

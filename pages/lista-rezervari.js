@@ -46,10 +46,14 @@ const Rezerevari = observer((props) => {
 			redirect: "follow",
 		};
 
+		// Get today date and add 2 years
+		const today = new Date();
+		const twoYears = today.addDays(730);
+
 		// Get posts
 		getAllPosts(
 			formatDateYMD(roTimezone(new Date())), // data_start
-			"20240121", // data_end
+			twoYears, // data_end
 			"private", // status
 			500, // per_page
 			token, // token

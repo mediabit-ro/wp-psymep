@@ -36,7 +36,9 @@ export default function recurrentBooking(
 	}
 
 	fetch(
-		`https://mediabit.ro/booking/wp-json/times/ocupied/?data_start=${formatDateYMD(
+		`${
+			process.env.NEXT_PUBLIC_URL
+		}/wp-json/times/ocupied/?data_start=${formatDateYMD(
 			dateObj
 		)}&data_end=${formatDateYMD(
 			addDays(dateObj, 7 * (recurrentEvents - 1))
@@ -54,14 +56,18 @@ export default function recurrentBooking(
 			}));
 			console.log(
 				"Bookings url",
-				`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_start=${formatDateYMD(
+				`${
+					process.env.NEXT_PUBLIC_URL
+				}/wp-json/wp/v2/posts/?data_start=${formatDateYMD(
 					dateObj
 				)}&data_end=${formatDateYMD(
 					addDays(dateObj, 7 * (recurrentEvents - 1))
 				)}${filter}&author=${id}&per_page=100&status=private`
 			);
 			fetch(
-				`https://mediabit.ro/booking/wp-json/wp/v2/posts/?data_start=${formatDateYMD(
+				`${
+					process.env.NEXT_PUBLIC_URL
+				}/wp-json/wp/v2/posts/?data_start=${formatDateYMD(
 					dateObj
 				)}&data_end=${formatDateYMD(
 					addDays(dateObj, 7 * (recurrentEvents - 1))

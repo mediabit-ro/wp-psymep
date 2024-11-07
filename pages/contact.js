@@ -79,19 +79,19 @@ const Contact = (props) => {
 							<tbody>
 								<tr>
 									<th>Contact</th>
-									<td>Elena Ivan</td>
+									<td>Ștefan Lățea</td>
 								</tr>
 								<tr>
 									<th>Telefon</th>
 									<td>
-										<a href='tel:0766472857'>0766472857</a>
+										<a href='tel:0741010358'>0741010358</a>
 									</td>
 								</tr>
 								<tr>
 									<th>E-mail</th>
 									<td>
-										<a href='mailto:elenastela.ivan@gmail.com'>
-											elenastela.ivan@gmail.com
+										<a href='mailto:stefan.latea@pymep.ro'>
+											stefan.latea@pymep.ro
 										</a>
 									</td>
 								</tr>

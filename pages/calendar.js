@@ -26,6 +26,7 @@ import store from "../store/store";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import Toolbar from "../components/calendar/Toolbar";
+import ModalAnt from "../components/Anunturi";
 
 moment.locale("ro");
 
@@ -68,8 +69,10 @@ const CalendarPage = observer((props) => {
 
 	const [users, setUsers] = useState([]);
 
+	const [showAnt, setShowAnt] = useState(false);
+
 	const selectEventHandler = (event) => {
-		if (event.start.getTime() > roTimezone(new Date()).getTime()) {
+		if (event.end.getTime() > roTimezone(new Date()).getTime()) {
 			setShowRez(true);
 			setDataRez(event);
 		}
@@ -261,17 +264,6 @@ const CalendarPage = observer((props) => {
 		}
 	}, [view, store.refreshTimes]);
 
-	// useEffect(() => {
-	// 	let days = document.querySelectorAll(".rbc-header");
-	// 	const start = getStartWeek(view);
-	// 	const now = new Date();
-	// 	const diffTime = Math.abs(now - start);
-	// 	const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-	// 	console.log(diffTime + " milliseconds");
-	// 	console.log(diffDays + " days");
-	// 	days[diffDays].scrollIntoView();
-	// });
-
 	const addEventHandler = () => {
 		setLoading(true);
 
@@ -303,21 +295,6 @@ const CalendarPage = observer((props) => {
 			var myHeaders = new Headers();
 			myHeaders.append("Authorization", `Bearer ${props.token}`);
 			myHeaders.append("Content-Type", "application/json");
-
-			console.log(
-				"Booking",
-				JSON.stringify({
-					client_id: 1,
-					provider_id: provider,
-					start_date: modalDataObj,
-					end_date: endDate,
-					location: "1",
-					status: "test",
-					recurrent,
-					filter_date: formatDateYMD(roTimezone(modalData)),
-					recurrent_id: recurrentId ? recurrentId : "",
-				})
-			);
 
 			var raw = JSON.stringify({
 				title: props.name,
@@ -581,6 +558,7 @@ const CalendarPage = observer((props) => {
 				events={events}
 				setEvents={setEvents}
 			/>
+			<ModalAnt showAnt={showAnt} setShowAnt={setShowAnt} />
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header closeButton>
 					<div>

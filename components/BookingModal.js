@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 import store from "../store/store";
 import Link from "next/link";
@@ -8,7 +8,7 @@ import {
 	formatDateReadableDM,
 	roTimezone,
 } from "./../utils";
-import { toJS } from "mobx";
+import { set, toJS } from "mobx";
 export default function BookingModal({
 	data,
 	showRez,
@@ -17,6 +17,9 @@ export default function BookingModal({
 	events,
 	setEvents,
 }) {
+	const [extendBookingState, setExtendBookingState] = useState(false);
+	const [error, setError] = useState();
+
 	const formatDate = (date) => {
 		const year = date.getFullYear();
 		const month = date.getMonth() + 1;
@@ -34,12 +37,21 @@ export default function BookingModal({
 		return `${year}${month}${day}T${hours}${minutes}${seconds}Z`;
 	};
 
+	let duration = 0;
+
 	if (data) {
 		const date = new Date(data.start);
 
 		// Convert date to '20230428T090000Z'
 
-		console.log("Data", formatDate(date));
+		const startDate = new Date(data.start);
+		const endDate = new Date(data.end);
+
+		duration = endDate - startDate;
+
+		duration = duration / 60000;
+
+		console.log("Data", formatDate(date), duration);
 	}
 
 	const cancelBookingHandler = () => {
@@ -72,17 +84,21 @@ export default function BookingModal({
 	};
 
 	const extendBookingHandler = () => {
+		setExtendBookingState(true);
 		var myHeaders = new Headers();
 		myHeaders.append("Authorization", `Bearer ${token}`);
 		myHeaders.append("Content-Type", "application/json");
 
-		let end_date = new Date(end_date);
+		console.log("data", data);
+
+		let end_date = new Date(data.end);
 		end_date.setMinutes(end_date.getMinutes() + 30);
 
 		var raw = JSON.stringify({
 			acf: {
 				start_date: new Date(data.start),
 				end_date: end_date,
+				provider_id: data.provider_id,
 			},
 		});
 
@@ -93,21 +109,28 @@ export default function BookingModal({
 			redirect: "follow",
 		};
 
-		console.log(requestOptions, data.id, token);
-
 		fetch(
 			`${process.env.NEXT_PUBLIC_URL}/wp-json/wp/v2/posts/${data.id}`,
 			requestOptions
 		)
 			.then((response) => response.json())
 			.then((result) => {
-				console.log("result", result);
-				events.splice(
-					events.findIndex((event) => event.id === result.id),
-					1
+				console.log(result);
+				// Find the event and change it's end date
+				if (result.code === "booking_exists") {
+					setError(result.message);
+					setTimeout(() => {
+						setError();
+					}, 5000);
+					setExtendBookingState(false);
+					return;
+				}
+				events.find((event) => event.id === result.id).end = new Date(
+					result.acf.end_date
 				);
 				setEvents([...events]);
 				setShowRez(false);
+				setExtendBookingState(false);
 			})
 			.catch((error) => {
 				console.log("error", error);
@@ -146,11 +169,24 @@ export default function BookingModal({
 								</tr>
 							</tbody>
 						</table>
-						{/* <button
-							onClick={extendBookingHandler}
-							className='btn btn-outline-primary w-100'>
-							Prelungeste cu 30
-						</button> */}
+						{duration == 60 && (
+							<button
+								disabled={extendBookingState || error}
+								onClick={() => extendBookingHandler()}
+								className='btn btn-outline-primary w-100'>
+								Prelungeste cu 30
+								{extendBookingState && (
+									<div
+										className='spinner-border spinner-border-sm ms-1'
+										role='status'></div>
+								)}
+							</button>
+						)}
+						{error && (
+							<div className='alert alert-danger' role='alert'>
+								{error}
+							</div>
+						)}
 						<Link
 							href={`https://calendar.google.com/calendar/render?action=TEMPLATE&dates=${formatDate(
 								data.start

@@ -11,8 +11,11 @@ import jsPDF from "jspdf";
 import Image from "next/image";
 
 function formatDateEmail(date) {
-	var d = new Date(date),
-		month = "" + (d.getMonth() + 1),
+	var d = new Date(date);
+
+	d = new Date(d.toLocaleString("en-US", { timeZone: "Europe/Bucharest" }));
+
+	var month = "" + (d.getMonth() + 1),
 		day = "" + d.getDate(),
 		year = d.getFullYear(),
 		minutes = d.getMinutes(),

@@ -49,6 +49,8 @@ export default function Login() {
 						redirect: "follow",
 					};
 
+					console.log("headers", "Authorization", `Bearer ${token}`);
+
 					fetch(
 						process.env.NEXT_PUBLIC_URL + "/wp-json/wp/v2/users/me",
 						requestOptions

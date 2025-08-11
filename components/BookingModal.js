@@ -287,8 +287,6 @@ export default function BookingModal({
 								</tr>
 							</tbody>
 						</table>
-
-
 						{/* Starting test */}
 						{ (data ? !data.modified : false) && <button onClick={ () => setShowEdit(!showEdit)  } className="btn btn-primary w-100 mb-3">Editează rezervarea</button> }
 						

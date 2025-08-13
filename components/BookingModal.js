@@ -203,7 +203,8 @@ export default function BookingModal({
 				start_date: start_date,
 				end_date: end_date,
 				provider_id: provider,
-				modified: new Date()
+				modified: new Date(),
+				filter_date: formatDateYMD(start_date)
 			},
 		});
 
@@ -290,7 +291,7 @@ export default function BookingModal({
 						{/* Starting test */}
 						{ (data ? !data.modified : false) && <button onClick={ () => setShowEdit(!showEdit)  } className="btn btn-primary w-100 mb-3">Editează rezervarea</button> }
 						
-						{ showEdit && <div className="bg-light p-3 mb-3">
+						{ showEdit && (data ? !data.modified : false) && <div className="bg-light p-3 mb-3">
 
 							<select
 								className="form-control w-100 mb-1"
@@ -341,7 +342,7 @@ export default function BookingModal({
 								</select>
 								<span className="ps-1" style={{"min-width": "60px"}}> - {getEndDate(selectedTime, duration)}</span>
 							</div>
-							<button onClick={ ()=> editBookingHandler() } className="btn btn-primary rounded w-100 py-1" style={{ "fontSize": "0.9rem" }} disabled={ editingBooking || !( (provider !== data.provider_id) || ( selectedTime !== startDateHours ) || ( selectedTime !== new Date(data.start).toLocaleTimeString("RO-ro", { hour: '2-digit', minute: '2-digit' }) ))}>Modifică {editingBooking && (
+							<button onClick={ ()=> editBookingHandler() } className="btn btn-primary rounded w-100 py-1" style={{ "fontSize": "0.9rem" }} disabled={ editingBooking || !( (provider !== data.provider_id) || ( selectedDate.getTime() !== new Date(data.start).getTime() ) || ( selectedTime !== new Date(data.start).toLocaleTimeString("RO-ro", { hour: '2-digit', minute: '2-digit' }) ))}>Modifică {editingBooking && (
 									<div
 										className='spinner-border spinner-border-sm ms-1'
 										role='status'></div>

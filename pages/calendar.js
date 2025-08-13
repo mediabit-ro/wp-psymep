@@ -67,6 +67,8 @@ const CalendarPage = observer((props) => {
 	const [events, setEvents] = useState([]);
 	const [times, setTimes] = useState([]);
 
+	console.log({events});
+
 	const [users, setUsers] = useState([]);
 
 	const [showAnt, setShowAnt] = useState(false);
@@ -158,19 +160,6 @@ const CalendarPage = observer((props) => {
 			)
 				.then((response) => response.json())
 				.then((result) => {
-					console.log(
-						"My bookings",
-						result.map((event) => {
-							const user = users.find((user) => user.id === event.author);
-							return {
-								title: user ? user.name : props.name,
-								start: roTimezone(new Date(event.acf.start_date)),
-								end: roTimezone(new Date(event.acf.end_date)),
-								provider_id: event.acf.provider_id,
-								id: event.id,
-							};
-						})
-					);
 					setEvents(
 						result.map((event) => {
 							const user = users.find((user) => user.id === event.author);
@@ -180,6 +169,7 @@ const CalendarPage = observer((props) => {
 								end: roTimezone(new Date(event.acf.end_date)),
 								provider_id: event.acf.provider_id,
 								id: event.id,
+								modified: event.acf.modified
 							};
 						})
 					);
@@ -246,7 +236,6 @@ const CalendarPage = observer((props) => {
 			)
 				.then((response) => response.json())
 				.then((result) => {
-					console.log("Times", result);
 					setTimes(
 						result.map((time) => ({
 							title: time.title,
@@ -462,7 +451,7 @@ const CalendarPage = observer((props) => {
 
 	function eventStyleGetter(event) {
 		const provider = store.providers.find(
-			(provider) => provider.id === event.provider_id
+			(provider) => provider.id == event.provider_id
 		);
 
 		let backgroundColor = provider ? provider.acf.culoare : "#ffffff",

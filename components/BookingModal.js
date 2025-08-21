@@ -85,7 +85,9 @@ export default function BookingModal({
 	} ,[data]);
 
 	useEffect(()=>{
-		setSelectedTime(timesForSelectedDate[0].toLocaleTimeString("RO-ro", { hour: '2-digit', minute: '2-digit' }));
+		if(timesForSelectedDate[0]) {
+			setSelectedTime(timesForSelectedDate[0].toLocaleTimeString("RO-ro", { hour: '2-digit', minute: '2-digit' }));
+		}
 	}, [selectedDate]);
 
 	const formatDate = (date) => {

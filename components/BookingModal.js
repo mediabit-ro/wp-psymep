@@ -15,9 +15,25 @@ import { set, toJS } from "mobx";
 
 const generateValidSlots = (start, rangeInHours = 36) => {
   const slots = [];
-  const startTime = new Date(start).getTime() - rangeInHours * 60 * 60 * 1000;
+  const now = Date.now();
+
+  // Calculate range
+  let startTime = Math.max(
+    now,
+    new Date(start).getTime() - rangeInHours * 60 * 60 * 1000
+  );
   const endTime = new Date(start).getTime() + rangeInHours * 60 * 60 * 1000;
 
+  // Align startTime to the next 30-minute slot
+  const startDate = new Date(startTime);
+  startDate.setMinutes(
+    startDate.getMinutes() + (30 - (startDate.getMinutes() % 30)) % 30,
+    0,
+    0
+  );
+  startTime = startDate.getTime();
+
+  // Generate slots
   for (let ts = startTime; ts <= endTime; ts += 30 * 60 * 1000) {
     const slot = new Date(ts);
     const hour = slot.getHours();
@@ -67,6 +83,10 @@ export default function BookingModal({
 		setSelectedDate( new Date(data ? data.start : null));
 		setProvider( data ? store.providers.find( provider => provider.id == data.provider_id ).id : null );
 	} ,[data]);
+
+	useEffect(()=>{
+		setSelectedTime(timesForSelectedDate[0].toLocaleTimeString("RO-ro", { hour: '2-digit', minute: '2-digit' }));
+	}, [selectedDate]);
 
 	const formatDate = (date) => {
 		const year = date.getFullYear();
@@ -312,7 +332,6 @@ export default function BookingModal({
 							onChange={(e) => {
 								const d = new Date(e.target.value);
 								setSelectedDate(d);
-								setSelectedTime(timesForSelectedDate[0].toLocaleTimeString("RO-ro", { hour: '2-digit', minute: '2-digit' })); // reset time if date changes
 							}}
 							>
 							{uniqueDates.map((d) => (

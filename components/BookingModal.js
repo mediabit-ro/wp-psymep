@@ -18,10 +18,7 @@ const generateValidSlots = (start, rangeInHours = 36) => {
   const now = Date.now();
 
   // Calculate range
-  let startTime = Math.max(
-    now,
-    new Date(start).getTime() - rangeInHours * 60 * 60 * 1000
-  );
+  let startTime = now;
   const endTime = new Date(start).getTime() + rangeInHours * 60 * 60 * 1000;
 
   // Align startTime to the next 30-minute slot

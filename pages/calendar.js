@@ -184,23 +184,25 @@ const CalendarPage = observer((props) => {
 	useEffect(() => {
 		if (new Date() < getEndWeek(view) && new Date() > getStartWeek(view)) {
 			if (window.innerWidth < 768) {
-				// Get with day of the week is in number
-				let day = new Date().getDay();
-				// Scroll '.rbc-time-view' to the current day
+			let day = new Date().getDay();
 
-				const timeView = document.querySelector(".rbc-time-view");
+			const timeView = document.querySelector(".rbc-time-view");
+			const headers = document.querySelectorAll(".rbc-header");
 
-				console.log(timeView);
+			if (day === 0) day = 6; // Sunday -> last day
+			if (day !== 1 && headers[day]) {
+				const targetHeader = headers[day];
 
-				// Get all elements class .rbc-header
-				const headers = document.querySelectorAll(".rbc-header");
-
-				// // console.log("Scroll into view");
-				if (day == 7) day = 6;
-				if (day !== 1) headers[day].scrollIntoView({ behavior: "smooth" });
+				// Scroll horizontally inside the container
+				timeView.scrollTo({
+				left: targetHeader.offsetLeft,
+				behavior: "smooth",
+				});
+			}
 			}
 		}
-	}, []);
+		}, []);
+
 
 	useEffect(() => {
 		if (

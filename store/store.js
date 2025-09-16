@@ -36,7 +36,7 @@ class Store {
 		this.refreshTimes = !this.refreshTimes;
 	}
 
-	myBookings = false;
+	myBookings = true;
 
 	toggleMyBookings() {
 		this.myBookings = !this.myBookings;

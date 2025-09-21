@@ -206,10 +206,8 @@ const CalendarPage = observer((props) => {
 
 	useEffect(() => {
 		if (
-			!store.myBookings &&
 			(!props.adminId || (props.adminId && props.adminId !== props.id))
 		) {
-			console.log("myBookings", store.myBookings);
 			setLoadingBookings(true);
 			var myHeaders = new Headers();
 			myHeaders.append("Authorization", `Bearer ${props.token}`);
@@ -666,7 +664,7 @@ const CalendarPage = observer((props) => {
 				<div className='calendar-wrap'>
 					<Calendar
 						localizer={localizer}
-						events={store.myBookings ? events : [...events, ...times]}
+						events={[...events, ...times]}
 						view='week'
 						views={["week"]}
 						min={new Date(2021, 2, 8, 7, 0)} // 8.00 AM

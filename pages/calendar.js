@@ -218,12 +218,19 @@ const CalendarPage = observer((props) => {
 				redirect: "follow",
 			};
 			let filter = "";
-			if (store.activeProviders.length) {
+			if (store.activeProviders.length ) {
 				filter = "&categories=";
 				store.activeProviders.forEach(
 					(provider) => (filter += provider.id + ",")
 				);
 			}
+			// No ocupied times by default on myBookings
+			if( !store.activeProviders.length && store.myBookings ) {
+				console.log("Here inside break");
+				setTimes([]);
+				return;
+			}
+
 			const now = formatDateYMD(roTimezone(new Date()));
 			const weekStart = formatDateYMD(getStartWeek(view));
 			fetch(
@@ -236,6 +243,7 @@ const CalendarPage = observer((props) => {
 			)
 				.then((response) => response.json())
 				.then((result) => {
+					console.log("Times", result);
 					setTimes(
 						result.map((time) => ({
 							title: time.title,

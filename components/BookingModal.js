@@ -225,6 +225,7 @@ export default function BookingModal({
 				modified: new Date(),
 				filter_date: formatDateYMD(start_date)
 			},
+			categories: [provider]
 		});
 
 		var requestOptions = {

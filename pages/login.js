@@ -51,15 +51,14 @@ export default function Login() {
 
 					console.log("headers", "Authorization", `Bearer ${token}`);
 
-					fetch("/api/user/", {
-					headers: {
-						token: token, // Or Authorization: `Bearer ${token}` if you prefer
-					},
-					})
-					.then((res) => res.json())
-					.then((data) => {
-						const { id, name } = data;
-						console.log("User:", id, name);
+					fetch(
+						process.env.NEXT_PUBLIC_URL + "/wp-json/wp/v2/users/me",
+						requestOptions
+					)
+						.then((response) => response.json())
+						.then((response) => {
+							// User data
+							const { id, name } = response;
 
 							// Get last custom post type "termeni"
 							fetch(

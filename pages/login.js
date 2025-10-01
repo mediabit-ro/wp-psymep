@@ -51,7 +51,7 @@ export default function Login() {
 
 					console.log("headers", "Authorization", `Bearer ${token}`);
 
-					fetch("/api/user", {
+					fetch("/api/user/", {
 					headers: {
 						token: token, // Or Authorization: `Bearer ${token}` if you prefer
 					},

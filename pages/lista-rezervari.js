@@ -13,6 +13,8 @@ import {
 	filterCanceled,
 	getAllPosts,
 	roTimezone,
+	addYears,
+	getDateRange
 } from "../utils";
 import { observer } from "mobx-react-lite";
 import store from "../store/store";
@@ -47,17 +49,17 @@ const Rezerevari = observer((props) => {
 		};
 
 		// Get today date and add 2 years
-		const today = new Date();
-		const twoYears = today.addDays(730);
+		const data_start = formatDateYMD(new Date());
+		const data_end = formatDateYMD(addYears(data_start, 2));
 
 		// Get posts
 		getAllPosts(
-			formatDateYMD(roTimezone(new Date())), // data_start
-			twoYears, // data_end
-			"private", // status
-			500, // per_page
-			token, // token
-			props.id, // author
+			data_start,
+			data_end,
+			"private",
+			500,
+			token,
+			props.id,
 			(posts) => {
 				posts.sort((first, second) =>
 					roTimezone(new Date(first.acf.start_date)) >
@@ -93,9 +95,10 @@ const Rezerevari = observer((props) => {
 
 		// Get old bookings
 		// Get first day of the current month
+		const oldBookingsRange = getDateRange();
 		getAllPosts(
-			formatDateYMD(roTimezone(new Date()).setDate(1)), // data_start
-			formatDateYMD(roTimezone(new Date()).addDays(-1)), // data_end
+			oldBookingsRange.start_date, // data_start
+			oldBookingsRange.end_date, // data_end
 			"private", // status
 			500, // per_page
 			token, // token

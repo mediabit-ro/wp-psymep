@@ -416,3 +416,36 @@ export const roTimezone = (date) => {
 	// return changeTimeZone(date, "Europe/Bucharest");
 	return new Date(date);
 };
+
+export function addYears(date, years) {
+  const d = new Date(date);
+  d.setFullYear(d.getFullYear() + years);
+  return d;
+}
+
+export function getDateRange() {
+  const today = roTimezone(new Date());
+  const dayOfMonth = today.getDate();
+
+  let start, end;
+
+  if (dayOfMonth === 1) {
+    // If it's the 1st → use last month
+    const firstDayLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+    const lastDayLastMonth = new Date(today.getFullYear(), today.getMonth(), 0); // day 0 of this month = last day of prev month
+    start = firstDayLastMonth;
+    end = lastDayLastMonth;
+  } else {
+    // Normal case: first day of current month → yesterday
+    const firstDayThisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    start = firstDayThisMonth;
+    end = yesterday;
+  }
+
+  return {
+    start_date: formatDateYMD(start),
+    end_date: formatDateYMD(end),
+  };
+}

@@ -64,6 +64,8 @@ export default function BookingModal({
 	const [selectedTime, setSelectedTime] = useState();
 	const [provider, setProvider] = useState();
 
+	console.log({selectedTime});
+
 	// Testing variables
 	const allValidSlots = generateValidSlots(data ? data.start : "");
 
@@ -82,7 +84,8 @@ export default function BookingModal({
 	} ,[data]);
 
 	useEffect(()=>{
-		if(timesForSelectedDate[0]) {
+		console.log(selectedTime, timesForSelectedDate);
+		if(timesForSelectedDate[0] && !timesForSelectedDate.find(time => time.toLocaleTimeString("RO-ro", { hour: '2-digit', minute: '2-digit' }) == selectedTime)) {
 			setSelectedTime(timesForSelectedDate[0].toLocaleTimeString("RO-ro", { hour: '2-digit', minute: '2-digit' }));
 		}
 	}, [selectedDate]);
@@ -359,7 +362,7 @@ export default function BookingModal({
 									</option>
 									))}
 								</select>
-								<span className="ps-1" style={{"min-width": "60px"}}> - {getEndDate(selectedTime, duration)}</span>
+								<span className="ps-1" style={{"minWidth": "60px"}}> - {getEndDate(selectedTime, duration)}</span>
 							</div>
 							<button onClick={ ()=> editBookingHandler() } className="btn btn-primary rounded w-100 py-1" style={{ "fontSize": "0.9rem" }} disabled={ editingBooking || !( (provider !== data.provider_id) || ( selectedDate.getTime() !== new Date(data.start).getTime() ) || ( selectedTime !== new Date(data.start).toLocaleTimeString("RO-ro", { hour: '2-digit', minute: '2-digit' }) ))}>Modifică {editingBooking && (
 									<div

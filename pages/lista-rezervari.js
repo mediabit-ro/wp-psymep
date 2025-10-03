@@ -33,10 +33,8 @@ const DynamicTabs = dynamic(() => import("react-bootstrap/Tabs"), {
 
 const Rezerevari = observer((props) => {
 	const [bookings, setBookings] = useState([]);
-	const [canceledBookings, setCanceledBookings] = useState([]);
 	const { token, id, adminId, name } = props;
 	const [oldBookings, setOldBookings] = useState([]);
-	const [oldCanceledBookings, setOldCanceledBookings] = useState([]);
 
 	useEffect(() => {
 		// Headers
@@ -136,27 +134,6 @@ const Rezerevari = observer((props) => {
 			}
 		);
 
-		getAllPosts(
-			formatDateYMD(roTimezone(new Date()).setDate(1)), // data_start
-			formatDateYMD(roTimezone(new Date())), // data_end
-			"trash", // status
-			500, // per_page
-			token, // token
-			props.id, // author
-			(posts) => {
-				console.log("Trash", posts);
-				setOldCanceledBookings(
-					posts.filter((booking) =>
-						filterCanceled(
-							booking.acf.start_date,
-							booking.date,
-							booking.modified,
-							booking
-						)
-					)
-				);
-			}
-		);
 
 		// Get providers
 		if (!store.providers.length) {

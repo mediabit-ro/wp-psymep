@@ -4,7 +4,7 @@ import nextCookie from "next-cookies";
 import cookie from "js-cookie";
 
 export const login = ({ token, id, name, terms }) => {
-	const admins = [92, 2];
+	const admins = [92, 2, 90];
 
 	if (admins.includes(id)) {
 		cookie.set("adminId", id, { expires: 1 });

@@ -100,7 +100,7 @@ const CalendarPage = observer((props) => {
 			})
 			.catch((error) => {
 				console.log("error", error);
-				Router.push("/login");
+				// Router.push("/login");
 			});
 
 		fetch(

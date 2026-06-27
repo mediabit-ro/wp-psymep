@@ -4,8 +4,11 @@ const nextConfig = {
 	async redirects() {
 		return [
 			{
-				source: '/:path*',
-				destination: 'https://app.kalyra.io/',
+				// Orice sub-pagină (ex: /calendar, /login) este trimisă înapoi
+				// la pagina principală care afișează mesajul de migrare.
+				// `/:path+` necesită cel puțin un segment, deci `/` nu se redirectează spre sine.
+				source: '/:path+',
+				destination: '/',
 				permanent: false,
 			},
 		];
